@@ -1261,17 +1261,18 @@ paths:
         \ by an Anonymous user.\n\n    org (optional):\n        If specified, visible\
         \ `CourseOverview` objects are filtered\n        such that only those belonging\
         \ to the organization with the\n        provided org code (e.g., \"HarvardX\"\
-        ) are returned.\n        Case-insensitive.\n\n    mobile (optional):\n   \
-        \     If specified, only visible `CourseOverview` objects that are\n     \
-        \   designated as mobile_available are returned.\n\n**Returns**\n\n    * 200\
-        \ on success, with a list of course discovery objects as returned\n      by\
-        \ `CourseDetailView`.\n    * 400 if an invalid parameter was sent or the username\
-        \ was not provided\n      for an authenticated request.\n    * 403 if a user\
-        \ who does not have permission to masquerade as\n      another user specifies\
-        \ a username other than their own.\n    * 404 if the specified user does not\
-        \ exist, or the requesting user does\n      not have permission to view their\
-        \ courses.\n\n    Example response:\n\n        [\n          {\n          \
-        \  \"blocks_url\": \"/api/courses/v1/blocks/?course_id=edX%2Fexample%2F2012_Fall\"\
+        ) are returned.\n        Case-insensitive.\n\n    role (optional):\n     \
+        \   If specified, visible `CourseOverview` objects are filtered\n        such\
+        \ that only those for which the user has the specified role\n        are returned.\
+        \ Multiple role parameters can be specified.\n        Case-insensitive.\n\n\
+        **Returns**\n\n    * 200 on success, with a list of course discovery objects\
+        \ as returned\n      by `CourseDetailView`.\n    * 400 if an invalid parameter\
+        \ was sent or the username was not provided\n      for an authenticated request.\n\
+        \    * 403 if a user who does not have permission to masquerade as\n     \
+        \ another user specifies a username other than their own.\n    * 404 if the\
+        \ specified user does not exist, or the requesting user does\n      not have\
+        \ permission to view their courses.\n\n    Example response:\n\n        [\n\
+        \          {\n            \"blocks_url\": \"/api/courses/v1/blocks/?course_id=edX%2Fexample%2F2012_Fall\"\
         ,\n            \"media\": {\n              \"course_image\": {\n         \
         \       \"uri\": \"/c4x/edX/example/asset/just_a_test.jpg\",\n           \
         \     \"name\": \"Course Image\"\n              }\n            },\n      \
@@ -1713,6 +1714,29 @@ paths:
         - api
     parameters:
       - name: course_key_string
+        in: path
+        required: true
+        type: string
+      - name: var
+        in: path
+        required: true
+        type: string
+  ? /api/discounts/user/{user_id}/course/(P{course_key_string}[/+]+{var}[/+]+api/discounts/user/{user_id}/course/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+)
+  : get:
+      operationId: api_discounts_user_course_+]+api_discounts_user_course_+]+(_|+)[_]+)_list
+      description: Return the discount percent, if the user has appropriate permissions.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - api
+    parameters:
+      - name: course_key_string
+        in: path
+        required: true
+        type: string
+      - name: user_id
         in: path
         required: true
         type: string
@@ -3507,9 +3531,31 @@ paths:
         in: path
         required: true
         type: string
+  /api/program_enrollments/v1/integration-reset:
+    post:
+      operationId: api_program_enrollments_v1_integration-reset_create
+      description: Reset enrollment and user data for organization
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - api
+    parameters: []
   /api/program_enrollments/v1/programs/enrollments/:
     get:
       operationId: api_program_enrollments_v1_programs_enrollments_list
+      description: How to respond to a GET request to this endpoint
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - api
+    parameters: []
+  /api/program_enrollments/v1/programs/readonly_access/:
+    get:
+      operationId: api_program_enrollments_v1_programs_readonly_access_list
       description: How to respond to a GET request to this endpoint
       parameters: []
       responses:
@@ -3560,6 +3606,35 @@ paths:
       operationId: api_program_enrollments_v1_programs_courses_enrollments_partial_update
       description: Modify the program course enrollments of a list of learners
       parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - api
+    parameters:
+      - name: course_id
+        in: path
+        required: true
+        type: string
+      - name: program_uuid
+        in: path
+        required: true
+        type: string
+  /api/program_enrollments/v1/programs/{program_uuid}/courses/{course_id}/grades/:
+    get:
+      operationId: api_program_enrollments_v1_programs_courses_grades_list
+      description: Defines the GET list endpoint for ProgramCourseGrade objects.
+      parameters:
+        - name: cursor
+          in: query
+          description: The pagination cursor value.
+          required: false
+          type: string
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
       responses:
         '200':
           description: ''
@@ -4595,6 +4670,18 @@ paths:
       tags:
         - cornerstone
     parameters: []
+  /courses/yt_video_metadata:
+    get:
+      operationId: courses_yt_video_metadata_list
+      description: "Will hit the youtube API if the key is available in settings\n\
+        :return: youtube video metadata"
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - courses
+    parameters: []
   /courses/{course_id}/teams/:
     get:
       operationId: courses_teams_list
@@ -5375,6 +5462,21 @@ paths:
         description: A unique integer value identifying this Enterprise Customer Learner.
         required: true
         type: integer
+  /enterprise/api/v1/enterprise_catalog_query/{catalog_query_id}/:
+    get:
+      operationId: enterprise_api_v1_enterprise_catalog_query_read
+      description: API endpoint for fetching a enterprise catalog query.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - enterprise
+    parameters:
+      - name: catalog_query_id
+        in: path
+        required: true
+        type: string
   /enterprise/api/v1/enterprise_catalogs/:
     get:
       operationId: enterprise_api_v1_enterprise_catalogs_list
