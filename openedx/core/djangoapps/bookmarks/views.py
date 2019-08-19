@@ -233,7 +233,7 @@ class BookmarksListView(ListCreateAPIView, BookmarksViewMixin):
 
     @swagger_auto_schema(
         operation_summary="Create a new bookmark for a user.",
-        operation_description=u"""\
+        operation_description=u"""
             The POST request only needs to contain one parameter "usage_id".
 
             Http400 is returned if the format of the request is not correct,

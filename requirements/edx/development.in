@@ -24,6 +24,7 @@ modernize                           # Used to make Python 2 code more modern wit
 #sphinxcontrib-openapi              # To generate API documentation..
                                     # ..but we are on a fork while waiting for https://github.com/sphinx-contrib/openapi/pull/40 to merge:
 git+https://github.com/edx/sphinxcontrib-openapi.git@81ae504edb1388a220155761f1db6860902a1d2c#egg=sphinxcontrib-openapi[markdown]==0.0
+recommonmark                        # To use markdown in sphinx
 
 # The officially released version of django-debug-toolbar-mongo doesn't support DJDT 1.x. This commit does.
 -e git+https://github.com/hmarr/django-debug-toolbar-mongo.git@b0686a76f1ce3532088c4aee6e76b9abe61cc808#egg=django-debug-toolbar-mongo==0.1.10

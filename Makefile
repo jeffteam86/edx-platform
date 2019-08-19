@@ -27,6 +27,7 @@ swagger: ## generate the swagger.yaml file
 	DJANGO_SETTINGS_MODULE=docs.docs_settings python manage.py lms generate_swagger -o $(SWAGGER)
 
 api-docs: swagger	## build the REST api docs
+	python docs/sw2md.py $(SWAGGER) docs/api/gen
 	cd docs/api; make html
 
 guides:	## build the developer guide docs

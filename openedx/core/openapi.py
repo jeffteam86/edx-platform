@@ -25,6 +25,21 @@ schema_view = get_schema_view(
 )
 
 
+def dedent(text):
+    """
+    Dedent multiline text nicely.
+
+    An initial empty line is ignored so that triple-quoted strings don't need
+    to start with a backslash.
+    """
+    if "\n" in text:
+        first, rest = text.split("\n", 1)
+        if not first.strip():
+            # First line is blank, discard it.
+            text = rest
+    return textwrap.dedent(text)
+
+
 def swagger_auto_schema(**kwargs):
     """
     Decorator for documenting an OpenAPI endpoint.
@@ -37,7 +52,7 @@ def swagger_auto_schema(**kwargs):
 
     """
     if 'operation_description' in kwargs:
-        kwargs['operation_description'] = textwrap.dedent(kwargs['operation_description'])
+        kwargs['operation_description'] = dedent(kwargs['operation_description'])
     for param in kwargs.get('manual_parameters', ()):
-        param.description = textwrap.dedent(param.description)
+        param.description = dedent(param.description)
     return drf_swagger_auto_schema(**kwargs)
