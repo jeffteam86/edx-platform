@@ -318,7 +318,6 @@ sortedcontainers==2.1.0
 soupsieve==1.9.3
 sphinx==1.8.5
 sphinxcontrib-httpdomain==1.7.0
-git+https://github.com/edx/sphinxcontrib-openapi.git@81ae504edb1388a220155761f1db6860902a1d2c#egg=sphinxcontrib-openapi[markdown]==0.0
 sphinxcontrib-websupport==1.1.2  # via sphinx
 sqlparse==0.3.0
 staff-graded-xblock==0.5
