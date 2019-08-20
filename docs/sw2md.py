@@ -179,6 +179,7 @@ def convert_swagger_to_markdown(swagger_data, output_dir):
                             outfile = slug.strip('/').replace('/', '_') + '.md'
                             outf = outfiles.open(os.path.join(output_dir, outfile), 'w')
                             outmd = MarkdownWriter(outf)
+                            outmd.print("# {}\n".format(slug))
                             indexmd.print("## {}\n".format(slug))
                         break
 
