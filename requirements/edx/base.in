@@ -81,7 +81,6 @@ edx-enterprise
 edx-milestones
 edx-oauth2-provider
 edx-organizations
-edx-proctoring>=2.0.1
 edx-proctoring-proctortrack==1.0.5  # Intentionally and permanently pinned to ensure code changes are reviewed
 edx-rest-api-client
 edx-search
