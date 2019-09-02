@@ -654,7 +654,7 @@ class Transcript(object):
         if input_format == 'srt':
 
             if output_format == 'txt':
-                text = SubRipFile.from_string(content.decode('utf8')).text
+                text = SubRipFile.from_string(content).text
                 return HTMLParser().unescape(text)
 
             elif output_format == 'sjson':
@@ -663,7 +663,7 @@ class Transcript(object):
                     # the exception if something went wrong in parsing the transcript.
                     srt_subs = SubRipFile.from_string(
                         # Skip byte order mark(BOM) character
-                        content.decode('utf-8-sig'),
+                        content,
                         error_handling=SubRipFile.ERROR_RAISE
                     )
                 except Error as ex:   # Base exception from pysrt
