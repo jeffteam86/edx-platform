@@ -823,18 +823,19 @@ class EdxNotesHelpersTest(ModuleStoreTestCase):
         helpers.send_request(
             self.user, self.course.id, path="test", page=1, page_size=25
         )
-        mock_get.assert_called_with(
-            "http://example.com/test/",
-            headers={
-                "x-annotator-auth-token": "test_token"
-            },
-            params={
-                "user": "anonymous_id",
-                "course_id": text_type(self.course.id),
-                'page': helpers.DEFAULT_PAGE,
-                'page_size': helpers.DEFAULT_PAGE_SIZE,
-            },
-            timeout=(settings.EDXNOTES_CONNECT_TIMEOUT, settings.EDXNOTES_READ_TIMEOUT)
+        params = {
+            "user": "anonymous_id",
+            "course_id": six.b(str(self.course.id)),
+            'page': helpers.DEFAULT_PAGE,
+            'page_size': helpers.DEFAULT_PAGE_SIZE,
+        }
+        called_args_str = str(mock_get.call_args_list)
+        self.assertIn("http://example.com/test/", called_args_str)
+        self.assertIn("headers={'x-annotator-auth-token': 'test_token'}", called_args_str)
+        self.assertIn("params=" + str(params), called_args_str)
+        self.assertIn(
+            "timeout=" + str((settings.EDXNOTES_CONNECT_TIMEOUT, settings.EDXNOTES_READ_TIMEOUT)),
+            called_args_str
         )
 
     def test_get_course_position_no_chapter(self):
