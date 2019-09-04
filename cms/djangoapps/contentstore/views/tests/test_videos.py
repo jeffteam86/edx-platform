@@ -1278,6 +1278,7 @@ class TranscriptPreferencesTestCase(VideoUploadTestBase, CourseTestCase):
         response = json.loads(response.content.decode('utf-8')) if is_video_transcript_enabled else response
 
         self.assertEqual(status_code, expected_status_code)
+        error_message = error_message.replace("u'", "'") if six.PY3 else error_message
         self.assertEqual(response.get('error', ''), error_message)
 
         # Remove modified and course_id fields from the response so as to check the expected transcript preferences.
