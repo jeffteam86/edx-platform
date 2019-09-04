@@ -20,7 +20,6 @@ define(['jquery', 'underscore', 'backbone', 'gettext', 'js/views/pages/base_page
                 'click .duplicate-button': 'duplicateXBlock',
                 'click .move-button': 'showMoveXBlockModal',
                 'click .delete-button': 'deleteXBlock',
-                'click .title-button': 'clickTitleButton',
                 'click .new-component-button': 'scrollToNewComponentButtons'
             },
 
@@ -227,29 +226,6 @@ define(['jquery', 'underscore', 'backbone', 'gettext', 'js/views/pages/base_page
             deleteXBlock: function(event) {
                 event.preventDefault();
                 this.deleteComponent(this.findXBlockElement(event.target));
-            },
-
-            clickTitleButton: function(event) {
-                event.preventDefault();
-
-                var self = this,
-                    button = $(event.target),
-                    xblockElement = this.findXBlockElement(event.target),
-                    titleElt = xblockElement.find('.xblock-display-name');
-
-                var input = $('<input type="text" size="40" />');
-                input.val(titleElt.text());
-                input.change(function(evt) {
-                    var newtitle = $(evt.target).val();
-                    titleElt.html(newtitle);
-                    XBlockUtils.findXBlockInfo(xblockElement, self.model).save({metadata: {display_name: newtitle}});
-                    button.show();
-                    return true;
-                });
-                titleElt.html(input);
-                input.focus();
-                button.hide();
-                return true;
             },
 
             createPlaceholderElement: function() {

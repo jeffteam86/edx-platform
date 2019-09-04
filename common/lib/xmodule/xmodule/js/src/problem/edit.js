@@ -53,12 +53,6 @@
 
         function MarkdownEditingDescriptor(element) {
             var that = this;
-            this.toggleCheatsheetVisibility = function() {
-                return MarkdownEditingDescriptor.prototype.toggleCheatsheetVisibility.apply(that, arguments);
-            };
-            this.toggleCheatsheet = function() {
-                return MarkdownEditingDescriptor.prototype.toggleCheatsheet.apply(that, arguments);
-            };
             this.onToolbarButton = function() {
                 return MarkdownEditingDescriptor.prototype.onToolbarButton.apply(that, arguments);
             };
@@ -75,7 +69,6 @@
                 // Add listeners for toolbar buttons (only present for markdown editor)
                 this.element.on('click', '.xml-tab', this.onShowXMLButton);
                 this.element.on('click', '.format-buttons button', this.onToolbarButton);
-                this.element.on('click', '.cheatsheet-toggle', this.toggleCheatsheet);
                 // Hide the XML text area
                 $(this.element.find('.xml-box')).hide();
             } else {
@@ -110,10 +103,6 @@
          */
         MarkdownEditingDescriptor.prototype.onShowXMLButton = function(e) {
             e.preventDefault();
-            if (this.cheatsheet && this.cheatsheet.hasClass('shown')) {
-                this.cheatsheet.toggleClass('shown');
-                this.toggleCheatsheetVisibility();
-            }
             if (this.confirmConversionToXml()) {
                 this.createXMLEditor(MarkdownEditingDescriptor.markdownToXml(this.markdown_editor.getValue()));
                 this.xml_editor.setCursor(0);
@@ -170,29 +159,6 @@
         };
 
         /*
-         Event listener for toggling cheatsheet (only possible when markdown editor is visible).
-         */
-        MarkdownEditingDescriptor.prototype.toggleCheatsheet = function(e) {
-            var that = this;
-            e.preventDefault();
-            if (!$(this.markdown_editor.getWrapperElement()).find('.simple-editor-cheatsheet')[0]) {
-                this.cheatsheet = $($('#simple-editor-cheatsheet').html());
-                $(this.markdown_editor.getWrapperElement()).append(this.cheatsheet);
-            }
-            this.toggleCheatsheetVisibility();
-            return setTimeout((function() {
-                return that.cheatsheet.toggleClass('shown');
-            }), 10);
-        };
-
-        /*
-         Function to toggle cheatsheet visibility.
-         */
-        MarkdownEditingDescriptor.prototype.toggleCheatsheetVisibility = function() {
-            return $('.modal-content').toggleClass('cheatsheet-is-shown');
-        };
-
-        /*
          Stores the current editor and hides the one that is not displayed.
          */
         MarkdownEditingDescriptor.prototype.setCurrentEditor = function(editor) {
@@ -212,7 +178,6 @@
         MarkdownEditingDescriptor.prototype.save = function() {
             this.element.off('click', '.xml-tab', this.changeEditor);
             this.element.off('click', '.format-buttons button', this.onToolbarButton);
-            this.element.off('click', '.cheatsheet-toggle', this.toggleCheatsheet);
             if (this.current_editor === this.markdown_editor) {
                 return {
                     data: MarkdownEditingDescriptor.markdownToXml(this.markdown_editor.getValue()),
