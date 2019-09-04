@@ -131,8 +131,12 @@ class CertificatesDetailView(GenericAPIView):
         )
 
 
-class CertificatesListView(GenericAPIView):
-    """
+from django.utils.decorators import method_decorator
+from openedx.core.openapi import swagger_auto_schema, openapi
+
+@method_decorator(name='get', decorator=swagger_auto_schema(
+    operation_summary="Get a paginated list of bookmarks for a user.",
+    operation_description=u"""\
         **Use Case**
 
             * Get the list of viewable course certificates for a specific user.
@@ -187,8 +191,9 @@ class CertificatesListView(GenericAPIView):
                 "download_url": "http://www.example.com/cert.pdf",
                 "grade": "0.98"
             }]
-    """
-
+        """,
+))
+class CertificatesListView(GenericAPIView):
     authentication_classes = (
         JwtAuthentication,
         OAuth2AuthenticationAllowInactiveUser,
@@ -209,16 +214,6 @@ class CertificatesListView(GenericAPIView):
     required_scopes = ['certificates:read']
 
     def get(self, request, username):
-        """
-        Gets the list of viewable course certificates for a specific user.
-
-        Args:
-            request (Request): Django request object.
-            username (string): URI element specifying the user's username.
-
-        Return:
-            A JSON serialized representation of the list of certificates.
-        """
         user_certs = []
         if self._viewable_by_requestor(request, username):
             for user_cert in self._get_certificates_for_user(username):

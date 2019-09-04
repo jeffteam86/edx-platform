@@ -161,9 +161,9 @@ class BookmarksViewMixin(object):
                 """,
         ),
     ],
-    # responses={
-    #     200: BookmarkSerializer,
-    # },
+    responses={
+        400: BookmarkSerializer,
+    },
 ))
 class BookmarksListView(ListCreateAPIView, BookmarksViewMixin):
     """REST endpoints for lists of bookmarks."""
@@ -344,6 +344,15 @@ class BookmarksDetailView(APIView, BookmarksViewMixin):
             log.error(error_message)
             return self.error_response(error_message, error_status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(
+        operation_summary="Get a specific bookmark for a user.",
+        operation_description=u"""
+            # Example Requests
+
+            GET /api/bookmarks/v1/bookmarks/{username},{usage_id}/?fields=display_name,path
+
+            """,
+    )
     def get(self, request, username=None, usage_id=None):
         """
         GET /api/bookmarks/v1/bookmarks/{username},{usage_id}?fields=display_name,path

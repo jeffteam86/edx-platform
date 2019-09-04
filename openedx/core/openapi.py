@@ -2,12 +2,26 @@
 Open API support.
 """
 
+import re
 import textwrap
 
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
+from django.conf.urls import url
 from drf_yasg import openapi
+from drf_yasg.generators import OpenAPISchemaGenerator
 from drf_yasg.utils import swagger_auto_schema as drf_swagger_auto_schema
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+
+
+def make_regex_schema_generator(url_pattern):
+    class RegexSchemaGenerator(OpenAPISchemaGenerator):
+        def get_endpoints(self, request):
+            endpoints = super(RegexSchemaGenerator, self).get_endpoints(request)
+            subpoints = {p: v for p, v in endpoints.items() if re.search(url_pattern, p)}
+            return subpoints
+        def determine_path_prefix(self, paths):
+            return "/api/"
+    return RegexSchemaGenerator
 
 openapi_info = openapi.Info(
     title="Open edX API",
@@ -18,8 +32,11 @@ openapi_info = openapi.Info(
     #license=openapi.License(name="BSD License"),                       # TODO: What does this mean?
 )
 
+ApiSchemaGenerator = make_regex_schema_generator(r"^/api/")
+
 schema_view = get_schema_view(
     openapi_info,
+    generator_class=ApiSchemaGenerator,
     public=True,
     permission_classes=(permissions.AllowAny,),
 )

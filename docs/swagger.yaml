@@ -5,7 +5,7 @@ info:
   contact:
     email: oscm@edx.org
   version: v1
-basePath: /
+basePath: /api
 consumes:
   - application/json
 produces:
@@ -16,75 +16,9 @@ securityDefinitions:
 security:
   - Basic: []
 paths:
-  /api-admin/api/v1/api_access_request/:
+  /badges/v1/assertions/user/{username}/:
     get:
-      operationId: api-admin_api_v1_api_access_request_list
-      description: Return `API Access Requests` in the form of a paginated list.
-      parameters:
-        - name: user__username
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: status
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: company_name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: site__domain
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: contacted
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/ApiAccessRequest'
-      tags:
-        - api-admin
-    parameters: []
-  /api/badges/v1/assertions/user/{username}/:
-    get:
-      operationId: api_badges_v1_assertions_user_read
+      operationId: badges_v1_assertions_user_read
       summary: '** Use cases **'
       description: "Request a list of assertions for a user, optionally constrained\
         \ to a course.\n\n** Example Requests **\n\n    GET /api/badges/v1/assertions/user/{username}/\n\
@@ -161,15 +95,15 @@ paths:
                 items:
                   $ref: '#/definitions/BadgeAssertion'
       tags:
-        - api
+        - badges
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/bookmarks/v1/bookmarks/:
+  /bookmarks/v1/bookmarks/:
     get:
-      operationId: api_bookmarks_v1_bookmarks_list
+      operationId: bookmarks_v1_bookmarks_list
       summary: Get a paginated list of bookmarks for a user.
       description: "The list can be filtered by passing parameter \"course_id=<course_id>\"\
         \nto only include bookmarks from a particular course.\n\nThe bookmarks are\
@@ -214,12 +148,10 @@ paths:
       responses:
         '200':
           description: ''
-          schema:
-            $ref: '#/definitions/Bookmark'
       tags:
-        - api
+        - bookmarks
     post:
-      operationId: api_bookmarks_v1_bookmarks_create
+      operationId: bookmarks_v1_bookmarks_create
       summary: Create a new bookmark for a user.
       description: "The POST request only needs to contain one parameter \"usage_id\"\
         .\n\nHttp400 is returned if the format of the request is not correct,\nthe\
@@ -231,27 +163,29 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - bookmarks
     parameters: []
-  /api/bookmarks/v1/bookmarks/{username},{usage_id}/:
+  /bookmarks/v1/bookmarks/{username},{usage_id}/:
     get:
-      operationId: api_bookmarks_v1_bookmarks_read
-      description: GET /api/bookmarks/v1/bookmarks/{username},{usage_id}?fields=display_name,path
+      operationId: bookmarks_v1_bookmarks_read
+      summary: Get a specific bookmark for a user.
+      description: "# Example Requests\n\nGET /api/bookmarks/v1/bookmarks/{username},{usage_id}/?fields=display_name,path\n\
+        \n"
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - bookmarks
     delete:
-      operationId: api_bookmarks_v1_bookmarks_delete
+      operationId: bookmarks_v1_bookmarks_delete
       description: DELETE /api/bookmarks/v1/bookmarks/{username},{usage_id}
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - bookmarks
     parameters:
       - name: usage_id
         in: path
@@ -261,9 +195,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/bulk_enroll/v1/bulk_enroll:
+  /bulk_enroll/v1/bulk_enroll:
     post:
-      operationId: api_bulk_enroll_v1_bulk_enroll_create
+      operationId: bulk_enroll_v1_bulk_enroll_create
       summary: '**Use Case**'
       description: "Enroll multiple users in one or more courses.\n\n**Example Request**\n\
         \n    POST /api/bulk_enroll/v1/bulk_enroll/ {\n        \"auto_enroll\": true,\n\
@@ -290,11 +224,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - bulk_enroll
     parameters: []
-  /api/ccx/v0/ccx/:
+  /ccx/v0/ccx/:
     get:
-      operationId: api_ccx_v0_ccx_list
+      operationId: ccx_v0_ccx_list
       summary: Gets a list of CCX Courses for a given Master Course.
       description: "Additional parameters are allowed for pagination purposes.\n\n\
         Args:\n    request (Request): Django request object.\n\nReturn:\n    A JSON\
@@ -334,9 +268,9 @@ paths:
                 items:
                   $ref: '#/definitions/CCXCourse'
       tags:
-        - api
+        - ccx
     post:
-      operationId: api_ccx_v0_ccx_create
+      operationId: ccx_v0_ccx_create
       summary: Creates a new CCX course for a given Master Course.
       description: "Args:\n    request (Request): Django request object.\n\nReturn:\n\
         \    A JSON serialized representation a newly created CCX course."
@@ -352,11 +286,11 @@ paths:
           schema:
             $ref: '#/definitions/CCXCourse'
       tags:
-        - api
+        - ccx
     parameters: []
-  /api/ccx/v0/ccx/{ccx_course_id}/:
+  /ccx/v0/ccx/{ccx_course_id}/:
     get:
-      operationId: api_ccx_v0_ccx_read
+      operationId: ccx_v0_ccx_read
       summary: Gets a CCX Course information.
       description: "Args:\n    request (Request): Django request object.\n    ccx_course_id\
         \ (string): URI element specifying the CCX course location.\n\nReturn:\n \
@@ -368,9 +302,9 @@ paths:
           schema:
             $ref: '#/definitions/CCXCourse'
       tags:
-        - api
+        - ccx
     patch:
-      operationId: api_ccx_v0_ccx_partial_update
+      operationId: ccx_v0_ccx_partial_update
       summary: Modifies a CCX course.
       description: "Args:\n    request (Request): Django request object.\n    ccx_course_id\
         \ (string): URI element specifying the CCX course location."
@@ -386,9 +320,9 @@ paths:
           schema:
             $ref: '#/definitions/CCXCourse'
       tags:
-        - api
+        - ccx
     delete:
-      operationId: api_ccx_v0_ccx_delete
+      operationId: ccx_v0_ccx_delete
       summary: Deletes a CCX course.
       description: "Args:\n    request (Request): Django request object.\n    ccx_course_id\
         \ (string): URI element specifying the CCX course location."
@@ -397,15 +331,15 @@ paths:
         '204':
           description: ''
       tags:
-        - api
+        - ccx
     parameters:
       - name: ccx_course_id
         in: path
         required: true
         type: string
-  /api/certificates/v0/certificates/{username}/:
+  /certificates/v0/certificates/{username}/:
     get:
-      operationId: api_certificates_v0_certificates_read
+      operationId: certificates_v0_certificates_read
       summary: Gets the list of viewable course certificates for a specific user.
       description: "Args:\n    request (Request): Django request object.\n    username\
         \ (string): URI element specifying the user's username.\n\nReturn:\n    A\
@@ -415,15 +349,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - certificates
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/certificates/v0/certificates/{username}/courses/{course_id}/:
+  /certificates/v0/certificates/{username}/courses/{course_id}/:
     get:
-      operationId: api_certificates_v0_certificates_courses_read
+      operationId: certificates_v0_certificates_courses_read
       summary: Gets a certificate information.
       description: "Args:\n    request (Request): Django request object.\n    username\
         \ (string): URI element specifying the user's username.\n    course_id (string):\
@@ -434,7 +368,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - certificates
     parameters:
       - name: course_id
         in: path
@@ -444,9 +378,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/cohorts/v1/courses/{course_key_string}/cohorts/{cohort_id}:
+  /cohorts/v1/courses/{course_key_string}/cohorts/{cohort_id}:
     get:
-      operationId: api_cohorts_v1_courses_cohorts_read
+      operationId: cohorts_v1_courses_cohorts_read
       description: Endpoint to get either one or all cohorts.
       parameters: []
       responses:
@@ -456,9 +390,9 @@ paths:
             type: object
             properties: {}
       tags:
-        - api
+        - cohorts
     post:
-      operationId: api_cohorts_v1_courses_cohorts_create
+      operationId: cohorts_v1_courses_cohorts_create
       description: Endpoint to create a new cohort, must not include cohort_id.
       parameters:
         - name: data
@@ -474,9 +408,9 @@ paths:
             type: object
             properties: {}
       tags:
-        - api
+        - cohorts
     patch:
-      operationId: api_cohorts_v1_courses_cohorts_partial_update
+      operationId: cohorts_v1_courses_cohorts_partial_update
       description: Endpoint to update a cohort name and/or assignment type.
       parameters:
         - name: data
@@ -492,7 +426,7 @@ paths:
             type: object
             properties: {}
       tags:
-        - api
+        - cohorts
     parameters:
       - name: cohort_id
         in: path
@@ -502,9 +436,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/cohorts/v1/courses/{course_key_string}/cohorts/{cohort_id}/users/{username}:
+  /cohorts/v1/courses/{course_key_string}/cohorts/{cohort_id}/users/{username}:
     get:
-      operationId: api_cohorts_v1_courses_cohorts_users_read
+      operationId: cohorts_v1_courses_cohorts_users_read
       description: Lists the users in a specific cohort.
       parameters: []
       responses:
@@ -513,9 +447,9 @@ paths:
           schema:
             $ref: '#/definitions/CohortUsersAPI'
       tags:
-        - api
+        - cohorts
     post:
-      operationId: api_cohorts_v1_courses_cohorts_users_create
+      operationId: cohorts_v1_courses_cohorts_users_create
       description: Add given users to the cohort.
       parameters:
         - name: data
@@ -529,9 +463,9 @@ paths:
           schema:
             $ref: '#/definitions/CohortUsersAPI'
       tags:
-        - api
+        - cohorts
     delete:
-      operationId: api_cohorts_v1_courses_cohorts_users_delete
+      operationId: cohorts_v1_courses_cohorts_users_delete
       summary: Removes and user from a specific cohort.
       description: "Note: It's better to use the post method to move users between\
         \ cohorts."
@@ -540,7 +474,7 @@ paths:
         '204':
           description: ''
       tags:
-        - api
+        - cohorts
     parameters:
       - name: cohort_id
         in: path
@@ -554,9 +488,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/cohorts/v1/courses/{course_key_string}/users:
+  /cohorts/v1/courses/{course_key_string}/users:
     post:
-      operationId: api_cohorts_v1_courses_users_create
+      operationId: cohorts_v1_courses_users_create
       description: "View method that accepts an uploaded file (using key \"uploaded-file\"\
         )\ncontaining cohort assignments for users. This method spawns a celery task\n\
         to do the assignments, and a CSV file with results is provided via data downloads."
@@ -565,15 +499,15 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - cohorts
     parameters:
       - name: course_key_string
         in: path
         required: true
         type: string
-  /api/cohorts/v1/settings/{course_key_string}:
+  /cohorts/v1/settings/{course_key_string}:
     get:
-      operationId: api_cohorts_v1_settings_read
+      operationId: cohorts_v1_settings_read
       description: Endpoint to fetch the course cohort settings.
       parameters: []
       responses:
@@ -583,9 +517,9 @@ paths:
             type: object
             properties: {}
       tags:
-        - api
+        - cohorts
     put:
-      operationId: api_cohorts_v1_settings_update
+      operationId: cohorts_v1_settings_update
       description: Endpoint to set the course cohort settings.
       parameters:
         - name: data
@@ -601,41 +535,41 @@ paths:
             type: object
             properties: {}
       tags:
-        - api
+        - cohorts
     parameters:
       - name: course_key_string
         in: path
         required: true
         type: string
-  /api/commerce/v0/baskets/:
+  /commerce/v0/baskets/:
     post:
-      operationId: api_commerce_v0_baskets_create
+      operationId: commerce_v0_baskets_create
       description: Attempt to enroll the user.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - commerce
     parameters: []
-  /api/commerce/v0/baskets/{basket_id}/order/:
+  /commerce/v0/baskets/{basket_id}/order/:
     get:
-      operationId: api_commerce_v0_baskets_order_list
+      operationId: commerce_v0_baskets_order_list
       description: HTTP handler.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - commerce
     parameters:
       - name: basket_id
         in: path
         required: true
         type: string
-  /api/commerce/v1/courses/:
+  /commerce/v1/courses/:
     get:
-      operationId: api_commerce_v1_courses_list
+      operationId: commerce_v1_courses_list
       description: List courses and modes.
       parameters: []
       responses:
@@ -646,11 +580,11 @@ paths:
             items:
               $ref: '#/definitions/commerce.Course'
       tags:
-        - api
+        - commerce
     parameters: []
-  /api/commerce/v1/courses/{course_id}/:
+  /commerce/v1/courses/{course_id}/:
     get:
-      operationId: api_commerce_v1_courses_read
+      operationId: commerce_v1_courses_read
       description: Retrieve, update, or create courses/modes.
       parameters: []
       responses:
@@ -659,9 +593,9 @@ paths:
           schema:
             $ref: '#/definitions/commerce.Course'
       tags:
-        - api
+        - commerce
     put:
-      operationId: api_commerce_v1_courses_update
+      operationId: commerce_v1_courses_update
       description: Retrieve, update, or create courses/modes.
       parameters:
         - name: data
@@ -675,9 +609,9 @@ paths:
           schema:
             $ref: '#/definitions/commerce.Course'
       tags:
-        - api
+        - commerce
     patch:
-      operationId: api_commerce_v1_courses_partial_update
+      operationId: commerce_v1_courses_partial_update
       description: Retrieve, update, or create courses/modes.
       parameters:
         - name: data
@@ -691,30 +625,30 @@ paths:
           schema:
             $ref: '#/definitions/commerce.Course'
       tags:
-        - api
+        - commerce
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/commerce/v1/orders/{number}/:
+  /commerce/v1/orders/{number}/:
     get:
-      operationId: api_commerce_v1_orders_read
+      operationId: commerce_v1_orders_read
       description: HTTP handler.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - commerce
     parameters:
       - name: number
         in: path
         required: true
         type: string
-  /api/completion/v1/completion-batch:
+  /completion/v1/completion-batch:
     post:
-      operationId: api_completion_v1_completion-batch_create
+      operationId: completion_v1_completion-batch_create
       summary: Inserts a batch of completions.
       description: "REST Endpoint Format:\n{\n  \"username\": \"username\",\n  \"\
         course_key\": \"course-key\",\n  \"blocks\": {\n    \"block_key1\": 0.0,\n\
@@ -727,18 +661,18 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - completion
     parameters: []
-  /api/completion/v1/subsection-completion/{username}/{course_key}/(P{subsection_id}[/]*):
+  /completion/v1/subsection-completion/{username}/{course_key}/(P{subsection_id}[/]*):
     get:
-      operationId: api_completion_v1_subsection-completion_]*)_list
+      operationId: completion_v1_subsection-completion_]*)_list
       description: Returns completion for a (user, subsection, course).
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - completion
     parameters:
       - name: course_key
         in: path
@@ -752,9 +686,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/course_goals/v0/course_goals/:
+  /course_goals/v0/course_goals/:
     get:
-      operationId: api_course_goals_v0_course_goals_list
+      operationId: course_goals_v0_course_goals_list
       summary: API calls to create and update a course goal.
       description: "Validates incoming data to ensure that course_key maps to an actual\n\
         course and that the goal_key is a valid option.\n\n**Use Case**\n    * Create\
@@ -798,9 +732,9 @@ paths:
                 items:
                   $ref: '#/definitions/CourseGoal'
       tags:
-        - api
+        - course_goals
     post:
-      operationId: api_course_goals_v0_course_goals_create
+      operationId: course_goals_v0_course_goals_create
       description: Create a new goal if one does not exist, otherwise update the existing
         goal.
       parameters:
@@ -815,11 +749,11 @@ paths:
           schema:
             $ref: '#/definitions/CourseGoal'
       tags:
-        - api
+        - course_goals
     parameters: []
-  /api/course_goals/v0/course_goals/{id}/:
+  /course_goals/v0/course_goals/{id}/:
     get:
-      operationId: api_course_goals_v0_course_goals_read
+      operationId: course_goals_v0_course_goals_read
       summary: API calls to create and update a course goal.
       description: "Validates incoming data to ensure that course_key maps to an actual\n\
         course and that the goal_key is a valid option.\n\n**Use Case**\n    * Create\
@@ -835,9 +769,9 @@ paths:
           schema:
             $ref: '#/definitions/CourseGoal'
       tags:
-        - api
+        - course_goals
     put:
-      operationId: api_course_goals_v0_course_goals_update
+      operationId: course_goals_v0_course_goals_update
       summary: API calls to create and update a course goal.
       description: "Validates incoming data to ensure that course_key maps to an actual\n\
         course and that the goal_key is a valid option.\n\n**Use Case**\n    * Create\
@@ -858,9 +792,9 @@ paths:
           schema:
             $ref: '#/definitions/CourseGoal'
       tags:
-        - api
+        - course_goals
     patch:
-      operationId: api_course_goals_v0_course_goals_partial_update
+      operationId: course_goals_v0_course_goals_partial_update
       summary: API calls to create and update a course goal.
       description: "Validates incoming data to ensure that course_key maps to an actual\n\
         course and that the goal_key is a valid option.\n\n**Use Case**\n    * Create\
@@ -881,9 +815,9 @@ paths:
           schema:
             $ref: '#/definitions/CourseGoal'
       tags:
-        - api
+        - course_goals
     delete:
-      operationId: api_course_goals_v0_course_goals_delete
+      operationId: course_goals_v0_course_goals_delete
       summary: API calls to create and update a course goal.
       description: "Validates incoming data to ensure that course_key maps to an actual\n\
         course and that the goal_key is a valid option.\n\n**Use Case**\n    * Create\
@@ -897,16 +831,16 @@ paths:
         '204':
           description: ''
       tags:
-        - api
+        - course_goals
     parameters:
       - name: id
         in: path
         description: A unique integer value identifying this course goal.
         required: true
         type: integer
-  /api/course_modes/v1/courses/{course_id}/:
+  /course_modes/v1/courses/{course_id}/:
     get:
-      operationId: api_course_modes_v1_courses_read
+      operationId: course_modes_v1_courses_read
       summary: View to list or create course modes for a course.
       description: "**Use Case**\n\n    List all course modes for a course, or create\
         \ a new\n    course mode.\n\n**Example Requests**\n\n    GET /api/course_modes/v1/courses/{course_id}/\n\
@@ -939,9 +873,9 @@ paths:
             items:
               $ref: '#/definitions/course_modes.CourseMode'
       tags:
-        - api
+        - course_modes
     post:
-      operationId: api_course_modes_v1_courses_create
+      operationId: course_modes_v1_courses_create
       summary: View to list or create course modes for a course.
       description: "**Use Case**\n\n    List all course modes for a course, or create\
         \ a new\n    course mode.\n\n**Example Requests**\n\n    GET /api/course_modes/v1/courses/{course_id}/\n\
@@ -977,15 +911,15 @@ paths:
           schema:
             $ref: '#/definitions/course_modes.CourseMode'
       tags:
-        - api
+        - course_modes
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/course_modes/v1/courses/{course_id}/{mode_slug}:
+  /course_modes/v1/courses/{course_id}/{mode_slug}:
     get:
-      operationId: api_course_modes_v1_courses_read
+      operationId: course_modes_v1_courses_read
       summary: View to retrieve, update, or delete a specific course mode for a course.
       description: "**Use Case**\n\n    Get or update course mode details for a specific\
         \ course mode on a course.\n    Or you may delete a specific course mode from\
@@ -1025,9 +959,9 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - course_modes
     patch:
-      operationId: api_course_modes_v1_courses_partial_update
+      operationId: course_modes_v1_courses_partial_update
       description: Performs a partial update of a CourseMode instance.
       parameters:
         - name: data
@@ -1043,9 +977,9 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - course_modes
     delete:
-      operationId: api_course_modes_v1_courses_delete
+      operationId: course_modes_v1_courses_delete
       summary: View to retrieve, update, or delete a specific course mode for a course.
       description: "**Use Case**\n\n    Get or update course mode details for a specific\
         \ course mode on a course.\n    Or you may delete a specific course mode from\
@@ -1083,7 +1017,7 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - course_modes
     parameters:
       - name: course_id
         in: path
@@ -1093,9 +1027,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/courses/v1/blocks/:
+  /courses/v1/blocks/:
     get:
-      operationId: api_courses_v1_blocks_list
+      operationId: courses_v1_blocks_list
       summary: '**Use Case**'
       description: "Returns the blocks in the course according to the requesting user's\n\
         \    access level.\n\n**Example requests**:\n\n    GET /api/courses/v1/blocks/?course_id=<course_id>\n\
@@ -1128,11 +1062,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - courses
     parameters: []
-  ? /api/courses/v1/blocks/(P{usage_key_string}{var}|api/courses/v1/blocks/(P{usage_key_string}(:i4x://[/]+/[/]+/[/]+/[@]+(:@[/]+))|{var})
+  ? /courses/v1/blocks/(P{usage_key_string}{var}|api/courses/v1/blocks/(P{usage_key_string}(:i4x://[/]+/[/]+/[/]+/[@]+(:@[/]+))|{var})
   : get:
-      operationId: api_courses_v1_blocks_courses_v1_blocks__[_]+_[_]+_[_]+_[@]+(:@[_read
+      operationId: courses_v1_blocks_courses_v1_blocks__[_]+_[_]+_[_]+_[@]+(:@[_read
       summary: '**Use Case**'
       description: "Returns the blocks within the requested block tree according to\
         \ the\n    requesting user's access level.\n\n**Example requests**:\n\n  \
@@ -1237,7 +1171,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - courses
     parameters:
       - name: usage_key_string
         in: path
@@ -1247,9 +1181,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/courses/v1/courses/:
+  /courses/v1/courses/:
     get:
-      operationId: api_courses_v1_courses_list
+      operationId: courses_v1_courses_list
       summary: '**Use Cases**'
       description: "Request information on all courses visible to the specified user.\n\
         \n**Example Requests**\n\n    GET /api/courses/v1/courses/\n\n**Response Values**\n\
@@ -1319,11 +1253,11 @@ paths:
                 items:
                   $ref: '#/definitions/Course'
       tags:
-        - api
+        - courses
     parameters: []
-  ? /api/courses/v1/courses/(P{course_key_string}[/+]+{var}[/+]+api/courses/v1/courses/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+)
+  ? /courses/v1/courses/(P{course_key_string}[/+]+{var}[/+]+api/courses/v1/courses/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+)
   : get:
-      operationId: api_courses_v1_courses_+]+api_courses_v1_courses_+]+(_|+)[_]+)_read
+      operationId: courses_v1_courses_+]+api_courses_v1_courses_+]+(_|+)[_]+)_read
       summary: '**Use Cases**'
       description: "Request details for a course\n\n**Example Requests**\n\n    GET\
         \ /api/courses/v1/courses/{course_key}/\n\n**Response Values**\n\n    Body\
@@ -1377,7 +1311,7 @@ paths:
           schema:
             $ref: '#/definitions/CourseDetail'
       tags:
-        - api
+        - courses
     parameters:
       - name: course_key_string
         in: path
@@ -1387,9 +1321,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/courses/v2/blocks/:
+  /courses/v2/blocks/:
     get:
-      operationId: api_courses_v2_blocks_list
+      operationId: courses_v2_blocks_list
       summary: '**Use Case**'
       description: "Returns the blocks in the course according to the requesting user's\n\
         \    access level.\n\n**Example requests**:\n\n    GET /api/courses/v1/blocks/?course_id=<course_id>\n\
@@ -1422,11 +1356,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - courses
     parameters: []
-  ? /api/courses/v2/blocks/(P{usage_key_string}{var}|api/courses/v2/blocks/(P{usage_key_string}(:i4x://[/]+/[/]+/[/]+/[@]+(:@[/]+))|{var})
+  ? /courses/v2/blocks/(P{usage_key_string}{var}|api/courses/v2/blocks/(P{usage_key_string}(:i4x://[/]+/[/]+/[/]+/[@]+(:@[/]+))|{var})
   : get:
-      operationId: api_courses_v2_blocks_courses_v2_blocks__[_]+_[_]+_[_]+_[@]+(:@[_read
+      operationId: courses_v2_blocks_courses_v2_blocks__[_]+_[_]+_[_]+_[@]+(:@[_read
       summary: '**Use Case**'
       description: "Returns the blocks within the requested block tree according to\
         \ the\n    requesting user's access level.\n\n**Example requests**:\n\n  \
@@ -1531,7 +1465,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - courses
     parameters:
       - name: usage_key_string
         in: path
@@ -1541,9 +1475,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/credit/v1/courses/:
+  /credit/v1/courses/:
     get:
-      operationId: api_credit_v1_courses_list
+      operationId: credit_v1_courses_list
       description: CreditCourse endpoints.
       parameters: []
       responses:
@@ -1554,9 +1488,9 @@ paths:
             items:
               $ref: '#/definitions/CreditCourse'
       tags:
-        - api
+        - credit
     post:
-      operationId: api_credit_v1_courses_create
+      operationId: credit_v1_courses_create
       description: CreditCourse endpoints.
       parameters:
         - name: data
@@ -1570,11 +1504,11 @@ paths:
           schema:
             $ref: '#/definitions/CreditCourse'
       tags:
-        - api
+        - credit
     parameters: []
-  /api/credit/v1/courses/{course_key}/:
+  /credit/v1/courses/{course_key}/:
     get:
-      operationId: api_credit_v1_courses_read
+      operationId: credit_v1_courses_read
       description: CreditCourse endpoints.
       parameters: []
       responses:
@@ -1583,9 +1517,9 @@ paths:
           schema:
             $ref: '#/definitions/CreditCourse'
       tags:
-        - api
+        - credit
     put:
-      operationId: api_credit_v1_courses_update
+      operationId: credit_v1_courses_update
       description: Create/update course modes for a course.
       parameters:
         - name: data
@@ -1599,9 +1533,9 @@ paths:
           schema:
             $ref: '#/definitions/CreditCourse'
       tags:
-        - api
+        - credit
     patch:
-      operationId: api_credit_v1_courses_partial_update
+      operationId: credit_v1_courses_partial_update
       description: CreditCourse endpoints.
       parameters:
         - name: data
@@ -1615,16 +1549,16 @@ paths:
           schema:
             $ref: '#/definitions/CreditCourse'
       tags:
-        - api
+        - credit
     parameters:
       - name: course_key
         in: path
         required: true
         type: string
         pattern: (?:[^/+]+(/|\+)[^/+]+(/|\+)[^/?]+)
-  /api/credit/v1/eligibility/:
+  /credit/v1/eligibility/:
     get:
-      operationId: api_credit_v1_eligibility_list
+      operationId: credit_v1_eligibility_list
       description: Returns eligibility for a user-course combination.
       parameters: []
       responses:
@@ -1635,11 +1569,11 @@ paths:
             items:
               $ref: '#/definitions/CreditEligibility'
       tags:
-        - api
+        - credit
     parameters: []
-  /api/credit/v1/providers/:
+  /credit/v1/providers/:
     get:
-      operationId: api_credit_v1_providers_list
+      operationId: credit_v1_providers_list
       description: Credit provider endpoints.
       parameters: []
       responses:
@@ -1650,11 +1584,11 @@ paths:
             items:
               $ref: '#/definitions/CreditProvider'
       tags:
-        - api
+        - credit
     parameters: []
-  /api/credit/v1/providers/{provider_id}/:
+  /credit/v1/providers/{provider_id}/:
     get:
-      operationId: api_credit_v1_providers_read
+      operationId: credit_v1_providers_read
       description: Credit provider endpoints.
       parameters: []
       responses:
@@ -1663,7 +1597,7 @@ paths:
           schema:
             $ref: '#/definitions/CreditProvider'
       tags:
-        - api
+        - credit
     parameters:
       - name: provider_id
         in: path
@@ -1672,46 +1606,46 @@ paths:
         required: true
         type: string
         pattern: '[a-z,A-Z,0-9,\-]+'
-  /api/credit/v1/providers/{provider_id}/callback/:
+  /credit/v1/providers/{provider_id}/callback/:
     post:
-      operationId: api_credit_v1_providers_callback_create
+      operationId: credit_v1_providers_callback_create
       description: POST handler.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - credit
     parameters:
       - name: provider_id
         in: path
         required: true
         type: string
-  /api/credit/v1/providers/{provider_id}/request/:
+  /credit/v1/providers/{provider_id}/request/:
     post:
-      operationId: api_credit_v1_providers_request_create
+      operationId: credit_v1_providers_request_create
       description: POST handler.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - credit
     parameters:
       - name: provider_id
         in: path
         required: true
         type: string
-  ? /api/discounts/course/(P{course_key_string}[/+]+{var}[/+]+api/discounts/course/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+)
-  : get:
-      operationId: api_discounts_course_+]+api_discounts_course_+]+(_|+)[_]+)_list
+  /discounts/course/(P{course_key_string}[/+]+{var}[/+]+api/discounts/course/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+):
+    get:
+      operationId: discounts_course_+]+api_discounts_course_+]+(_|+)[_]+)_list
       description: Return the discount percent, if the user has appropriate permissions.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - discounts
     parameters:
       - name: course_key_string
         in: path
@@ -1721,16 +1655,16 @@ paths:
         in: path
         required: true
         type: string
-  ? /api/discounts/user/{user_id}/course/(P{course_key_string}[/+]+{var}[/+]+api/discounts/user/{user_id}/course/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+)
+  ? /discounts/user/{user_id}/course/(P{course_key_string}[/+]+{var}[/+]+api/discounts/user/{user_id}/course/(P{course_key_string}[/+]+(/|+)[/+]+{var}[/]+)
   : get:
-      operationId: api_discounts_user_course_+]+api_discounts_user_course_+]+(_|+)[_]+)_list
+      operationId: discounts_user_course_+]+api_discounts_user_course_+]+(_|+)[_]+)_list
       description: Return the discount percent, if the user has appropriate permissions.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - discounts
     parameters:
       - name: course_key_string
         in: path
@@ -1744,31 +1678,31 @@ paths:
         in: path
         required: true
         type: string
-  /api/discussion/v1/accounts/replace_username:
+  /discussion/v1/accounts/replace_username:
     post:
-      operationId: api_discussion_v1_accounts_replace_username_create
+      operationId: discussion_v1_accounts_replace_username_create
       description: Implements the username replacement endpoint
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - discussion
     parameters: []
-  /api/discussion/v1/accounts/retire_forum:
+  /discussion/v1/accounts/retire_forum:
     post:
-      operationId: api_discussion_v1_accounts_retire_forum_create
+      operationId: discussion_v1_accounts_retire_forum_create
       description: Implements the retirement endpoint.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - discussion
     parameters: []
-  /api/discussion/v1/comments/:
+  /discussion/v1/comments/:
     get:
-      operationId: api_discussion_v1_comments_list
+      operationId: discussion_v1_comments_list
       description: "Implements the GET method for the list endpoint as described in\
         \ the\nclass docstring."
       parameters: []
@@ -1779,9 +1713,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     post:
-      operationId: api_discussion_v1_comments_create
+      operationId: discussion_v1_comments_create
       description: "Implements the POST method for the list endpoint as described\
         \ in the\nclass docstring."
       parameters: []
@@ -1792,11 +1726,11 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     parameters: []
-  /api/discussion/v1/comments/{comment_id}/:
+  /discussion/v1/comments/{comment_id}/:
     get:
-      operationId: api_discussion_v1_comments_read
+      operationId: discussion_v1_comments_read
       description: Implements the GET method for comments against response ID
       parameters: []
       responses:
@@ -1806,9 +1740,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     patch:
-      operationId: api_discussion_v1_comments_partial_update
+      operationId: discussion_v1_comments_partial_update
       description: "Implements the PATCH method for the instance endpoint as described\
         \ in\nthe class docstring."
       parameters: []
@@ -1819,9 +1753,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     delete:
-      operationId: api_discussion_v1_comments_delete
+      operationId: discussion_v1_comments_delete
       description: "Implements the DELETE method for the instance endpoint as described\
         \ in\nthe class docstring"
       parameters: []
@@ -1832,22 +1766,22 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     parameters:
       - name: comment_id
         in: path
         required: true
         type: string
-  ? /api/discussion/v1/course_topics/(P{course_id}[/+]+{var}[/+]+api/discussion/v1/course_topics/(P{course_id}[/+]+(/|+)[/+]+{var}[/]+)
+  ? /discussion/v1/course_topics/(P{course_id}[/+]+{var}[/+]+api/discussion/v1/course_topics/(P{course_id}[/+]+(/|+)[/+]+{var}[/]+)
   : get:
-      operationId: api_discussion_v1_course_topics_+]+api_discussion_v1_course_topics_+]+(_|+)[_]+)_list
+      operationId: discussion_v1_course_topics_+]+api_discussion_v1_course_topics_+]+(_|+)[_]+)_list
       description: Implements the GET method as described in the class docstring.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - discussion
     parameters:
       - name: course_id
         in: path
@@ -1857,16 +1791,16 @@ paths:
         in: path
         required: true
         type: string
-  /api/discussion/v1/courses/(P{course_id}[/+]+{var}[/+]+api/discussion/v1/courses/(P{course_id}[/+]+(/|+)[/+]+{var}[/]+):
+  /discussion/v1/courses/(P{course_id}[/+]+{var}[/+]+api/discussion/v1/courses/(P{course_id}[/+]+(/|+)[/+]+{var}[/]+):
     get:
-      operationId: api_discussion_v1_courses_+]+api_discussion_v1_courses_+]+(_|+)[_]+)_list
+      operationId: discussion_v1_courses_+]+api_discussion_v1_courses_+]+(_|+)[_]+)_list
       description: Implements the GET method as described in the class docstring.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - discussion
     parameters:
       - name: course_id
         in: path
@@ -1876,25 +1810,25 @@ paths:
         in: path
         required: true
         type: string
-  /api/discussion/v1/courses/{course_id}/roles/{rolename}/:
+  /discussion/v1/courses/{course_id}/roles/{rolename}/:
     get:
-      operationId: api_discussion_v1_courses_roles_read
+      operationId: discussion_v1_courses_roles_read
       description: Implement a handler for the GET method.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - discussion
     post:
-      operationId: api_discussion_v1_courses_roles_create
+      operationId: discussion_v1_courses_roles_create
       description: Implement a handler for the POST method.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - discussion
     parameters:
       - name: course_id
         in: path
@@ -1904,9 +1838,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/discussion/v1/courses/{course_id}/settings:
+  /discussion/v1/courses/{course_id}/settings:
     get:
-      operationId: api_discussion_v1_courses_settings_list
+      operationId: discussion_v1_courses_settings_list
       description: Implement a handler for the GET method.
       parameters: []
       responses:
@@ -1916,9 +1850,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     patch:
-      operationId: api_discussion_v1_courses_settings_partial_update
+      operationId: discussion_v1_courses_settings_partial_update
       description: Implement a handler for the PATCH method.
       parameters: []
       responses:
@@ -1928,15 +1862,15 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/discussion/v1/threads/:
+  /discussion/v1/threads/:
     get:
-      operationId: api_discussion_v1_threads_list
+      operationId: discussion_v1_threads_list
       description: "Implements the GET method for the list endpoint as described in\
         \ the\nclass docstring."
       parameters: []
@@ -1947,9 +1881,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     post:
-      operationId: api_discussion_v1_threads_create
+      operationId: discussion_v1_threads_create
       description: "Implements the POST method for the list endpoint as described\
         \ in the\nclass docstring."
       parameters: []
@@ -1960,11 +1894,11 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     parameters: []
-  /api/discussion/v1/threads/{thread_id}/:
+  /discussion/v1/threads/{thread_id}/:
     get:
-      operationId: api_discussion_v1_threads_read
+      operationId: discussion_v1_threads_read
       description: Implements the GET method for thread ID
       parameters: []
       responses:
@@ -1974,9 +1908,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     patch:
-      operationId: api_discussion_v1_threads_partial_update
+      operationId: discussion_v1_threads_partial_update
       description: "Implements the PATCH method for the instance endpoint as described\
         \ in\nthe class docstring."
       parameters: []
@@ -1987,9 +1921,9 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     delete:
-      operationId: api_discussion_v1_threads_delete
+      operationId: discussion_v1_threads_delete
       description: "Implements the DELETE method for the instance endpoint as described\
         \ in\nthe class docstring"
       parameters: []
@@ -2000,48 +1934,48 @@ paths:
         - application/json
         - application/merge-patch+json
       tags:
-        - api
+        - discussion
     parameters:
       - name: thread_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/proctoring_review_callback/:
+  /edx_proctoring/proctoring_review_callback/:
     post:
-      operationId: api_edx_proctoring_proctoring_review_callback_create
+      operationId: edx_proctoring_proctoring_review_callback_create
       description: Post callback handler
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters: []
-  /api/edx_proctoring/v1/instructor/{course_id}:
+  /edx_proctoring/v1/instructor/{course_id}:
     get:
-      operationId: api_edx_proctoring_v1_instructor_read
+      operationId: edx_proctoring_v1_instructor_read
       description: Redirect to dashboard for a given course and optional exam_id
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/instructor/{course_id}/{exam_id}:
+  /edx_proctoring/v1/instructor/{course_id}/{exam_id}:
     get:
-      operationId: api_edx_proctoring_v1_instructor_read
+      operationId: edx_proctoring_v1_instructor_read
       description: Redirect to dashboard for a given course and optional exam_id
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: course_id
         in: path
@@ -2051,20 +1985,20 @@ paths:
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/active_exams_for_user:
+  /edx_proctoring/v1/proctored_exam/active_exams_for_user:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_active_exams_for_user_list
+      operationId: edx_proctoring_v1_proctored_exam_active_exams_for_user_list
       description: returns the get_active_exams_for_user
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters: []
-  /api/edx_proctoring/v1/proctored_exam/allowance:
+  /edx_proctoring/v1/proctored_exam/allowance:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_allowance_list
+      operationId: edx_proctoring_v1_proctored_exam_allowance_list
       description: "HTTP GET handler. Get all allowances for a course.\nCourse and\
         \ Global staff can view both timed and proctored exam allowances."
       parameters: []
@@ -2072,49 +2006,49 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_allowance_update
+      operationId: edx_proctoring_v1_proctored_exam_allowance_update
       description: HTTP GET handler. Adds or updates Allowance
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     delete:
-      operationId: api_edx_proctoring_v1_proctored_exam_allowance_delete
+      operationId: edx_proctoring_v1_proctored_exam_allowance_delete
       description: HTTP DELETE handler. Removes Allowance.
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters: []
-  /api/edx_proctoring/v1/proctored_exam/attempt:
+  /edx_proctoring/v1/proctored_exam/attempt:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_list
+      operationId: edx_proctoring_v1_proctored_exam_attempt_list
       description: HTTP GET Handler. Returns the status of the exam attempt.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_create
+      operationId: edx_proctoring_v1_proctored_exam_attempt_create
       description: HTTP POST handler. To create an exam attempt.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters: []
-  /api/edx_proctoring/v1/proctored_exam/attempt/course_id/{course_id}:
+  /edx_proctoring/v1/proctored_exam/attempt/course_id/{course_id}:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_course_id_read
+      operationId: edx_proctoring_v1_proctored_exam_attempt_course_id_read
       description: "HTTP GET Handler. Returns the status of the exam attempt.\nCourse\
         \ and Global staff can view both timed and proctored exam attempts."
       parameters: []
@@ -2122,15 +2056,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/attempt/course_id/{course_id}/search/{search_by}:
+  /edx_proctoring/v1/proctored_exam/attempt/course_id/{course_id}/search/{search_by}:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_course_id_search_read
+      operationId: edx_proctoring_v1_proctored_exam_attempt_course_id_search_read
       description: "HTTP GET Handler. Returns the status of the exam attempt.\nCourse\
         \ and Global staff can view both timed and proctored exam attempts."
       parameters: []
@@ -2138,7 +2072,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: course_id
         in: path
@@ -2148,72 +2082,72 @@ paths:
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/attempt/{attempt_id}:
+  /edx_proctoring/v1/proctored_exam/attempt/{attempt_id}:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_read
+      operationId: edx_proctoring_v1_proctored_exam_attempt_read
       description: HTTP GET Handler. Returns the status of the exam attempt.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_update
+      operationId: edx_proctoring_v1_proctored_exam_attempt_update
       description: HTTP POST handler. To stop an exam.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     delete:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_delete
+      operationId: edx_proctoring_v1_proctored_exam_attempt_delete
       description: HTTP DELETE handler. Removes an exam attempt.
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: attempt_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/attempt/{attempt_id}/review_status:
+  /edx_proctoring/v1/proctored_exam/attempt/{attempt_id}/review_status:
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_review_status_update
+      operationId: edx_proctoring_v1_proctored_exam_attempt_review_status_update
       description: Update the is_status_acknowledge flag for the specific attempt
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: attempt_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/attempt/{external_id}/ready:
+  /edx_proctoring/v1/proctored_exam/attempt/{external_id}/ready:
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_ready_create
+      operationId: edx_proctoring_v1_proctored_exam_attempt_ready_create
       description: Post callback handler
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: external_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/attempt/{external_id}/reviewed:
+  /edx_proctoring/v1/proctored_exam/attempt/{external_id}/reviewed:
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_attempt_reviewed_create
+      operationId: edx_proctoring_v1_proctored_exam_attempt_reviewed_create
       description: "Called when 3rd party proctoring service has finished its review\
         \ of\nan attempt."
       parameters: []
@@ -2221,15 +2155,15 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: external_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/exam:
+  /edx_proctoring/v1/proctored_exam/exam:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_list
+      operationId: edx_proctoring_v1_proctored_exam_exam_list
       description: "HTTP GET handler.\n    Scenarios:\n        by exam_id: calls get_exam_by_id()\n\
         \        by course_id, content_id: get_exam_by_content_id()"
       parameters: []
@@ -2237,29 +2171,29 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_create
+      operationId: edx_proctoring_v1_proctored_exam_exam_create
       description: Http POST handler. Creates an exam.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_update
+      operationId: edx_proctoring_v1_proctored_exam_exam_update
       description: "HTTP PUT handler. To update an exam.\ncalls the update_exam"
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters: []
-  /api/edx_proctoring/v1/proctored_exam/exam/course_id/{course_id}:
+  /edx_proctoring/v1/proctored_exam/exam/course_id/{course_id}:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_course_id_read
+      operationId: edx_proctoring_v1_proctored_exam_exam_course_id_read
       description: "HTTP GET handler.\n    Scenarios:\n        by exam_id: calls get_exam_by_id()\n\
         \        by course_id, content_id: get_exam_by_content_id()"
       parameters: []
@@ -2267,33 +2201,33 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_course_id_create
+      operationId: edx_proctoring_v1_proctored_exam_exam_course_id_create
       description: Http POST handler. Creates an exam.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_course_id_update
+      operationId: edx_proctoring_v1_proctored_exam_exam_course_id_update
       description: "HTTP PUT handler. To update an exam.\ncalls the update_exam"
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/exam/course_id/{course_id}/content_id/{content_id}:
+  /edx_proctoring/v1/proctored_exam/exam/course_id/{course_id}/content_id/{content_id}:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_course_id_content_id_read
+      operationId: edx_proctoring_v1_proctored_exam_exam_course_id_content_id_read
       description: "HTTP GET handler.\n    Scenarios:\n        by exam_id: calls get_exam_by_id()\n\
         \        by course_id, content_id: get_exam_by_content_id()"
       parameters: []
@@ -2301,25 +2235,25 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_course_id_content_id_create
+      operationId: edx_proctoring_v1_proctored_exam_exam_course_id_content_id_create
       description: Http POST handler. Creates an exam.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_course_id_content_id_update
+      operationId: edx_proctoring_v1_proctored_exam_exam_course_id_content_id_update
       description: "HTTP PUT handler. To update an exam.\ncalls the update_exam"
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: content_id
         in: path
@@ -2329,9 +2263,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/exam/exam_id/{exam_id}:
+  /edx_proctoring/v1/proctored_exam/exam/exam_id/{exam_id}:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_exam_id_read
+      operationId: edx_proctoring_v1_proctored_exam_exam_exam_id_read
       description: "HTTP GET handler.\n    Scenarios:\n        by exam_id: calls get_exam_by_id()\n\
         \        by course_id, content_id: get_exam_by_content_id()"
       parameters: []
@@ -2339,33 +2273,33 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     post:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_exam_id_create
+      operationId: edx_proctoring_v1_proctored_exam_exam_exam_id_create
       description: Http POST handler. Creates an exam.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_exam_exam_id_update
+      operationId: edx_proctoring_v1_proctored_exam_exam_exam_id_update
       description: "HTTP PUT handler. To update an exam.\ncalls the update_exam"
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: exam_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/proctored_exam/{course_id}/allowance:
+  /edx_proctoring/v1/proctored_exam/{course_id}/allowance:
     get:
-      operationId: api_edx_proctoring_v1_proctored_exam_allowance_list
+      operationId: edx_proctoring_v1_proctored_exam_allowance_list
       description: "HTTP GET handler. Get all allowances for a course.\nCourse and\
         \ Global staff can view both timed and proctored exam allowances."
       parameters: []
@@ -2373,33 +2307,33 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     put:
-      operationId: api_edx_proctoring_v1_proctored_exam_allowance_update
+      operationId: edx_proctoring_v1_proctored_exam_allowance_update
       description: HTTP GET handler. Adds or updates Allowance
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     delete:
-      operationId: api_edx_proctoring_v1_proctored_exam_allowance_delete
+      operationId: edx_proctoring_v1_proctored_exam_allowance_delete
       description: HTTP DELETE handler. Removes Allowance.
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/edx_proctoring/v1/retire_backend_user/{user_id}/:
+  /edx_proctoring/v1/retire_backend_user/{user_id}/:
     post:
-      operationId: api_edx_proctoring_v1_retire_backend_user_create
+      operationId: edx_proctoring_v1_retire_backend_user_create
       description: "Deletes all user data for the particular user_id\nfrom all configured\
         \ backends"
       parameters: []
@@ -2407,26 +2341,26 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - edx_proctoring
     parameters:
       - name: user_id
         in: path
         required: true
         type: string
-  /api/edxnotes/v1/retire_user/:
+  /edxnotes/v1/retire_user/:
     post:
-      operationId: api_edxnotes_v1_retire_user_create
+      operationId: edxnotes_v1_retire_user_create
       description: Implements the retirement endpoint.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - edxnotes
     parameters: []
-  /api/embargo/v1/course_access/:
+  /embargo/v1/course_access/:
     get:
-      operationId: api_embargo_v1_course_access_list
+      operationId: embargo_v1_course_access_list
       summary: GET /api/embargo/v1/course_access/
       description: "Arguments:\n    request (HttpRequest)\n\nReturn:\n    Response:\
         \ True or False depending on the check."
@@ -2435,11 +2369,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - embargo
     parameters: []
-  /api/enrollment/v1/course/{course_id}:
+  /enrollment/v1/course/{course_id}:
     get:
-      operationId: api_enrollment_v1_course_read
+      operationId: enrollment_v1_course_read
       summary: Read enrollment information for a particular course.
       description: "HTTP Endpoint for retrieving course level enrollment information.\n\
         \nArgs:\n    request (Request): To get current course enrollment information,\
@@ -2452,15 +2386,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - enrollment
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/enrollment/v1/enrollment:
+  /enrollment/v1/enrollment:
     get:
-      operationId: api_enrollment_v1_enrollment_list
+      operationId: enrollment_v1_enrollment_list
       summary: Gets a list of all course enrollments for a user.
       description: "Returns a list for the currently logged in user, or for the user\
         \ named by the 'user' GET\nparameter. If the username does not match that\
@@ -2478,9 +2412,9 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - enrollment
     post:
-      operationId: api_enrollment_v1_enrollment_create
+      operationId: enrollment_v1_enrollment_create
       summary: Enrolls the currently logged-in user in a course.
       description: "Server-to-server calls may deactivate or modify the mode of existing\
         \ enrollments. All other requests\ngo through `add_enrollment()`, which allows\
@@ -2490,11 +2424,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - enrollment
     parameters: []
-  /api/enrollment/v1/enrollment/{course_id}:
+  /enrollment/v1/enrollment/{course_id}:
     get:
-      operationId: api_enrollment_v1_enrollment_read
+      operationId: enrollment_v1_enrollment_read
       summary: Create, read, or update enrollment information for a user.
       description: "HTTP Endpoint for all CRUD operations for a user course enrollment.\
         \ Allows creation, reading, and\nupdates of the current enrollment for a particular\
@@ -2510,15 +2444,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - enrollment
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/enrollment/v1/enrollment/{username},{course_id}:
+  /enrollment/v1/enrollment/{username},{course_id}:
     get:
-      operationId: api_enrollment_v1_enrollment_read
+      operationId: enrollment_v1_enrollment_read
       summary: Create, read, or update enrollment information for a user.
       description: "HTTP Endpoint for all CRUD operations for a user course enrollment.\
         \ Allows creation, reading, and\nupdates of the current enrollment for a particular\
@@ -2534,7 +2468,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - enrollment
     parameters:
       - name: course_id
         in: path
@@ -2544,9 +2478,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/enrollment/v1/enrollments/:
+  /enrollment/v1/enrollments/:
     get:
-      operationId: api_enrollment_v1_enrollments_list
+      operationId: enrollment_v1_enrollments_list
       summary: '**Use Cases**'
       description: "Get a list of all course enrollments, optionally filtered by a\
         \ course ID or list of usernames.\n\n**Example Requests**\n\n    GET /api/enrollment/v1/enrollments\n\
@@ -2604,11 +2538,11 @@ paths:
                 items:
                   $ref: '#/definitions/CourseEnrollmentsApiList'
       tags:
-        - api
+        - enrollment
     parameters: []
-  /api/enrollment/v1/roles/:
+  /enrollment/v1/roles/:
     get:
-      operationId: api_enrollment_v1_roles_list
+      operationId: enrollment_v1_roles_list
       description: Gets a list of all roles for the currently logged-in user, filtered
         by course_id if supplied
       parameters: []
@@ -2616,22 +2550,22 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - enrollment
     parameters: []
-  /api/enrollment/v1/unenroll/:
+  /enrollment/v1/unenroll/:
     post:
-      operationId: api_enrollment_v1_unenroll_create
+      operationId: enrollment_v1_unenroll_create
       description: Unenrolls the specified user from all courses.
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - enrollment
     parameters: []
-  /api/entitlements/v1/entitlements/:
+  /entitlements/v1/entitlements/:
     get:
-      operationId: api_entitlements_v1_entitlements_list
+      operationId: entitlements_v1_entitlements_list
       description: "Override the list method to expire records that are past the\n\
         policy and requested via the API before returning those records."
       parameters:
@@ -2679,9 +2613,9 @@ paths:
                 items:
                   $ref: '#/definitions/CourseEntitlement'
       tags:
-        - api
+        - entitlements
     post:
-      operationId: api_entitlements_v1_entitlements_create
+      operationId: entitlements_v1_entitlements_create
       description: ''
       parameters:
         - name: data
@@ -2695,11 +2629,11 @@ paths:
           schema:
             $ref: '#/definitions/CourseEntitlement'
       tags:
-        - api
+        - entitlements
     parameters: []
-  /api/entitlements/v1/entitlements/{uuid}/:
+  /entitlements/v1/entitlements/{uuid}/:
     get:
-      operationId: api_entitlements_v1_entitlements_read
+      operationId: entitlements_v1_entitlements_read
       description: "Override the retrieve method to expire a record that is past the\n\
         policy and is requested via the API before returning that record."
       parameters: []
@@ -2709,9 +2643,9 @@ paths:
           schema:
             $ref: '#/definitions/CourseEntitlement'
       tags:
-        - api
+        - entitlements
     put:
-      operationId: api_entitlements_v1_entitlements_update
+      operationId: entitlements_v1_entitlements_update
       description: ''
       parameters:
         - name: data
@@ -2725,9 +2659,9 @@ paths:
           schema:
             $ref: '#/definitions/CourseEntitlement'
       tags:
-        - api
+        - entitlements
     patch:
-      operationId: api_entitlements_v1_entitlements_partial_update
+      operationId: entitlements_v1_entitlements_partial_update
       description: ''
       parameters:
         - name: data
@@ -2741,25 +2675,25 @@ paths:
           schema:
             $ref: '#/definitions/CourseEntitlement'
       tags:
-        - api
+        - entitlements
     delete:
-      operationId: api_entitlements_v1_entitlements_delete
+      operationId: entitlements_v1_entitlements_delete
       description: ''
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - entitlements
     parameters:
       - name: uuid
         in: path
         required: true
         type: string
         pattern: '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
-  /api/experiments/v0/data/:
+  /experiments/v0/data/:
     get:
-      operationId: api_experiments_v0_data_list
+      operationId: experiments_v0_data_list
       description: ''
       parameters:
         - name: experiment_id
@@ -2806,9 +2740,9 @@ paths:
                 items:
                   $ref: '#/definitions/ExperimentData'
       tags:
-        - api
+        - experiments
     post:
-      operationId: api_experiments_v0_data_create
+      operationId: experiments_v0_data_create
       description: ''
       parameters:
         - name: data
@@ -2822,9 +2756,9 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentDataCreate'
       tags:
-        - api
+        - experiments
     put:
-      operationId: api_experiments_v0_data_update
+      operationId: experiments_v0_data_update
       description: ''
       parameters:
         - name: data
@@ -2838,11 +2772,11 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentData'
       tags:
-        - api
+        - experiments
     parameters: []
-  /api/experiments/v0/data/bulk_upsert/:
+  /experiments/v0/data/bulk_upsert/:
     put:
-      operationId: api_experiments_v0_data_bulk_upsert
+      operationId: experiments_v0_data_bulk_upsert
       description: ''
       parameters:
         - name: data
@@ -2856,11 +2790,11 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentData'
       tags:
-        - api
+        - experiments
     parameters: []
-  /api/experiments/v0/data/{id}/:
+  /experiments/v0/data/{id}/:
     get:
-      operationId: api_experiments_v0_data_read
+      operationId: experiments_v0_data_read
       description: ''
       parameters: []
       responses:
@@ -2869,9 +2803,9 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentData'
       tags:
-        - api
+        - experiments
     put:
-      operationId: api_experiments_v0_data_update
+      operationId: experiments_v0_data_update
       description: ''
       parameters:
         - name: data
@@ -2885,9 +2819,9 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentData'
       tags:
-        - api
+        - experiments
     patch:
-      operationId: api_experiments_v0_data_partial_update
+      operationId: experiments_v0_data_partial_update
       description: ''
       parameters:
         - name: data
@@ -2901,25 +2835,25 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentData'
       tags:
-        - api
+        - experiments
     delete:
-      operationId: api_experiments_v0_data_delete
+      operationId: experiments_v0_data_delete
       description: ''
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - experiments
     parameters:
       - name: id
         in: path
         description: A unique integer value identifying this Experiment Data.
         required: true
         type: integer
-  /api/experiments/v0/key-value/:
+  /experiments/v0/key-value/:
     get:
-      operationId: api_experiments_v0_key-value_list
+      operationId: experiments_v0_key-value_list
       description: ''
       parameters:
         - name: experiment_id
@@ -2966,9 +2900,9 @@ paths:
                 items:
                   $ref: '#/definitions/ExperimentKeyValue'
       tags:
-        - api
+        - experiments
     post:
-      operationId: api_experiments_v0_key-value_create
+      operationId: experiments_v0_key-value_create
       description: ''
       parameters:
         - name: data
@@ -2982,11 +2916,11 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentKeyValue'
       tags:
-        - api
+        - experiments
     parameters: []
-  /api/experiments/v0/key-value/bulk_upsert/:
+  /experiments/v0/key-value/bulk_upsert/:
     put:
-      operationId: api_experiments_v0_key-value_bulk_upsert
+      operationId: experiments_v0_key-value_bulk_upsert
       description: ''
       parameters:
         - name: data
@@ -3000,11 +2934,11 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentKeyValue'
       tags:
-        - api
+        - experiments
     parameters: []
-  /api/experiments/v0/key-value/{id}/:
+  /experiments/v0/key-value/{id}/:
     get:
-      operationId: api_experiments_v0_key-value_read
+      operationId: experiments_v0_key-value_read
       description: ''
       parameters: []
       responses:
@@ -3013,9 +2947,9 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentKeyValue'
       tags:
-        - api
+        - experiments
     put:
-      operationId: api_experiments_v0_key-value_update
+      operationId: experiments_v0_key-value_update
       description: ''
       parameters:
         - name: data
@@ -3029,9 +2963,9 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentKeyValue'
       tags:
-        - api
+        - experiments
     patch:
-      operationId: api_experiments_v0_key-value_partial_update
+      operationId: experiments_v0_key-value_partial_update
       description: ''
       parameters:
         - name: data
@@ -3045,16 +2979,16 @@ paths:
           schema:
             $ref: '#/definitions/ExperimentKeyValue'
       tags:
-        - api
+        - experiments
     delete:
-      operationId: api_experiments_v0_key-value_delete
+      operationId: experiments_v0_key-value_delete
       description: ''
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - experiments
     parameters:
       - name: id
         in: path
@@ -3062,9 +2996,9 @@ paths:
           Pair.
         required: true
         type: integer
-  /api/grades/v1/courses/:
+  /grades/v1/courses/:
     get:
-      operationId: api_grades_v1_courses_list
+      operationId: grades_v1_courses_list
       description: "Gets a course progress status.\nArgs:\n    request (Request):\
         \ Django request object.\n    course_id (string): URI element specifying the\
         \ course location.\n                        Can also be passed as a GET parameter\
@@ -3085,11 +3019,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - grades
     parameters: []
-  /api/grades/v1/courses/{course_id}/:
+  /grades/v1/courses/{course_id}/:
     get:
-      operationId: api_grades_v1_courses_read
+      operationId: grades_v1_courses_read
       description: "Gets a course progress status.\nArgs:\n    request (Request):\
         \ Django request object.\n    course_id (string): URI element specifying the\
         \ course location.\n                        Can also be passed as a GET parameter\
@@ -3100,15 +3034,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - grades
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/grades/v1/gradebook/{course_id}/:
+  /grades/v1/gradebook/{course_id}/:
     get:
-      operationId: api_grades_v1_gradebook_read
+      operationId: grades_v1_gradebook_read
       description: "Checks for course author access for the given course by the requesting\
         \ user.\nCalls the view function if has access, otherwise raises a 403."
       parameters: []
@@ -3116,15 +3050,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - grades
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/grades/v1/gradebook/{course_id}/bulk-update:
+  /grades/v1/gradebook/{course_id}/bulk-update:
     post:
-      operationId: api_grades_v1_gradebook_bulk-update_create
+      operationId: grades_v1_gradebook_bulk-update_create
       description: "Checks for course author access for the given course by the requesting\
         \ user.\nCalls the view function if has access, otherwise raises a 403."
       parameters: []
@@ -3132,15 +3066,15 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - grades
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/grades/v1/gradebook/{course_id}/grading-info:
+  /grades/v1/gradebook/{course_id}/grading-info:
     get:
-      operationId: api_grades_v1_gradebook_grading-info_list
+      operationId: grades_v1_gradebook_grading-info_list
       description: "Checks for course author access for the given course by the requesting\
         \ user.\nCalls the view function if has access, otherwise raises a 403."
       parameters:
@@ -3158,15 +3092,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - grades
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/grades/v1/policy/courses/{course_id}/:
+  /grades/v1/policy/courses/{course_id}/:
     get:
-      operationId: api_grades_v1_policy_courses_read
+      operationId: grades_v1_policy_courses_read
       summary: '**Use Case**'
       description: "Get the course grading policy.\n\n**Example requests**:\n\n  \
         \  GET /api/grades/v1/policy/courses/{course_id}/\n\n**Response Values**\n\
@@ -3191,15 +3125,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - grades
     parameters:
       - name: course_id
         in: path
         required: true
         type: string
-  /api/grades/v1/subsection/{subsection_id}/:
+  /grades/v1/subsection/{subsection_id}/:
     get:
-      operationId: api_grades_v1_subsection_read
+      operationId: grades_v1_subsection_read
       description: "Returns subection grade data, override grade data and a history\
         \ of changes made to\na specific users specific subsection grade.\n\nArgs:\n\
         \    subsection_id: String representation of a usage_key, which is an opaque\
@@ -3210,15 +3144,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - grades
     parameters:
       - name: subsection_id
         in: path
         required: true
         type: string
-  /api/mobile/{api_version}/course_info/{course_id}/handouts:
+  /mobile/{api_version}/course_info/{course_id}/handouts:
     get:
-      operationId: api_mobile_course_info_handouts_list
+      operationId: mobile_course_info_handouts_list
       summary: '**Use Case**'
       description: "Get the HTML for course handouts.\n\n**Example Request**\n\n \
         \   GET /api/mobile/v0.5/course_info/{course_id}/handouts\n\n**Response Values**\n\
@@ -3240,7 +3174,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - mobile
     parameters:
       - name: api_version
         in: path
@@ -3250,9 +3184,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/mobile/{api_version}/course_info/{course_id}/updates:
+  /mobile/{api_version}/course_info/{course_id}/updates:
     get:
-      operationId: api_mobile_course_info_updates_list
+      operationId: mobile_course_info_updates_list
       summary: '**Use Case**'
       description: "Get the content for course updates.\n\n**Example Request**\n\n\
         \    GET /api/mobile/v0.5/course_info/{course_id}/updates\n\n**Response Values**\n\
@@ -3277,7 +3211,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - mobile
     parameters:
       - name: api_version
         in: path
@@ -3287,24 +3221,24 @@ paths:
         in: path
         required: true
         type: string
-  /api/mobile/{api_version}/my_user_info:
+  /mobile/{api_version}/my_user_info:
     get:
-      operationId: api_mobile_my_user_info_list
+      operationId: mobile_my_user_info_list
       description: Redirect to the currently-logged-in user's info page
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - mobile
     parameters:
       - name: api_version
         in: path
         required: true
         type: string
-  /api/mobile/{api_version}/users/{username}:
+  /mobile/{api_version}/users/{username}:
     get:
-      operationId: api_mobile_users_read
+      operationId: mobile_users_read
       summary: '**Use Case**'
       description: "Get information about the specified user and access other resources\n\
         \    the user has permissions for.\n\n    Users are redirected to this endpoint\
@@ -3325,7 +3259,7 @@ paths:
           schema:
             $ref: '#/definitions/mobile_api.User'
       tags:
-        - api
+        - mobile
     parameters:
       - name: api_version
         in: path
@@ -3338,9 +3272,9 @@ paths:
         required: true
         type: string
         pattern: ^[\w.@+-]+$
-  /api/mobile/{api_version}/users/{username}/course_enrollments/:
+  /mobile/{api_version}/users/{username}/course_enrollments/:
     get:
-      operationId: api_mobile_users_course_enrollments_list
+      operationId: mobile_users_course_enrollments_list
       summary: '**Use Case**'
       description: "Get information about the courses that the currently signed in\
         \ user is\n    enrolled in.\n\n    v1 differs from v0.5 version by returning\
@@ -3388,7 +3322,7 @@ paths:
             items:
               $ref: '#/definitions/CourseEnrollment'
       tags:
-        - api
+        - mobile
     parameters:
       - name: api_version
         in: path
@@ -3398,9 +3332,9 @@ paths:
         in: path
         required: true
         type: string
-  ? /api/mobile/{api_version}/users/{username}/course_status_info/(P{course_id}[/+]+{var}[/+]+api/mobile/{api_version}/users/{username}/course_status_info/(P{course_id}[/+]+(/|+)[/+]+{var}[/]+)
+  ? /mobile/{api_version}/users/{username}/course_status_info/(P{course_id}[/+]+{var}[/+]+api/mobile/{api_version}/users/{username}/course_status_info/(P{course_id}[/+]+(/|+)[/+]+{var}[/]+)
   : get:
-      operationId: api_mobile_users_course_status_info_+]+api_mobile_users_course_status_info_+]+(_|+)[_]+)_list
+      operationId: mobile_users_course_status_info_+]+api_mobile_users_course_status_info_+]+(_|+)[_]+)_list
       description: Get the ID of the module that the specified user last visited in
         the specified course.
       parameters: []
@@ -3408,9 +3342,9 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - mobile
     patch:
-      operationId: api_mobile_users_course_status_info_+]+api_mobile_users_course_status_info_+]+(_|+)[_]+)_partial_update
+      operationId: mobile_users_course_status_info_+]+api_mobile_users_course_status_info_+]+(_|+)[_]+)_partial_update
       description: Update the ID of the module that the specified user last visited
         in the specified course.
       parameters: []
@@ -3418,7 +3352,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - mobile
     parameters:
       - name: api_version
         in: path
@@ -3436,9 +3370,72 @@ paths:
         in: path
         required: true
         type: string
-  /api/organizations/v0/organizations/:
+  /notifier/v1/users/:
     get:
-      operationId: api_organizations_v0_organizations_list
+      operationId: notifier_v1_users_list
+      description: "An endpoint that the notifier can use to retrieve users who have\
+        \ enabled\ndaily forum digests, including all information that the notifier\
+        \ needs about\nsuch users."
+      parameters:
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/NotifierUser'
+      tags:
+        - notifier
+    parameters: []
+  /notifier/v1/users/{id}/:
+    get:
+      operationId: notifier_v1_users_read
+      description: "An endpoint that the notifier can use to retrieve users who have\
+        \ enabled\ndaily forum digests, including all information that the notifier\
+        \ needs about\nsuch users."
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotifierUser'
+      tags:
+        - notifier
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this user.
+        required: true
+        type: integer
+  /organizations/v0/organizations/:
+    get:
+      operationId: organizations_v0_organizations_list
       description: "Organization view to fetch list organization data or single organization\n\
         using organization short name."
       parameters:
@@ -3476,11 +3473,11 @@ paths:
                 items:
                   $ref: '#/definitions/Organization'
       tags:
-        - api
+        - organizations
     parameters: []
-  /api/organizations/v0/organizations/{short_name}/:
+  /organizations/v0/organizations/{short_name}/:
     get:
-      operationId: api_organizations_v0_organizations_read
+      operationId: organizations_v0_organizations_read
       description: "Organization view to fetch list organization data or single organization\n\
         using organization short name."
       parameters: []
@@ -3490,7 +3487,7 @@ paths:
           schema:
             $ref: '#/definitions/Organization'
       tags:
-        - api
+        - organizations
     parameters:
       - name: short_name
         in: path
@@ -3498,24 +3495,24 @@ paths:
           special characters are period (.), hyphen (-) and underscore (_).
         required: true
         type: string
-  /api/profile_images/v1/{username}/remove:
+  /profile_images/v1/{username}/remove:
     post:
-      operationId: api_profile_images_v1_remove_create
+      operationId: profile_images_v1_remove_create
       description: POST /api/profile_images/v1/{username}/remove
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - profile_images
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/profile_images/v1/{username}/upload:
+  /profile_images/v1/{username}/upload:
     post:
-      operationId: api_profile_images_v1_upload_create
+      operationId: profile_images_v1_upload_create
       description: POST /api/profile_images/v1/{username}/upload
       parameters: []
       responses:
@@ -3525,48 +3522,48 @@ paths:
         - multipart/form-data
         - application/x-www-form-urlencoded
       tags:
-        - api
+        - profile_images
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/program_enrollments/v1/integration-reset:
+  /program_enrollments/v1/integration-reset:
     post:
-      operationId: api_program_enrollments_v1_integration-reset_create
+      operationId: program_enrollments_v1_integration-reset_create
       description: Reset enrollment and user data for organization
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters: []
-  /api/program_enrollments/v1/programs/enrollments/:
+  /program_enrollments/v1/programs/enrollments/:
     get:
-      operationId: api_program_enrollments_v1_programs_enrollments_list
+      operationId: program_enrollments_v1_programs_enrollments_list
       description: How to respond to a GET request to this endpoint
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters: []
-  /api/program_enrollments/v1/programs/readonly_access/:
+  /program_enrollments/v1/programs/readonly_access/:
     get:
-      operationId: api_program_enrollments_v1_programs_readonly_access_list
+      operationId: program_enrollments_v1_programs_readonly_access_list
       description: How to respond to a GET request to this endpoint
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters: []
-  /api/program_enrollments/v1/programs/{program_uuid}/courses/{course_id}/enrollments/:
+  /program_enrollments/v1/programs/{program_uuid}/courses/{course_id}/enrollments/:
     get:
-      operationId: api_program_enrollments_v1_programs_courses_enrollments_list
+      operationId: program_enrollments_v1_programs_courses_enrollments_list
       description: Defines the GET list endpoint for ProgramCourseEnrollment objects.
       parameters:
         - name: cursor
@@ -3583,34 +3580,34 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     post:
-      operationId: api_program_enrollments_v1_programs_courses_enrollments_create
+      operationId: program_enrollments_v1_programs_courses_enrollments_create
       description: Enroll a list of students in a course in a program
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - program_enrollments
     put:
-      operationId: api_program_enrollments_v1_programs_courses_enrollments_update
+      operationId: program_enrollments_v1_programs_courses_enrollments_update
       description: Create or Update the program course enrollments of a list of learners
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     patch:
-      operationId: api_program_enrollments_v1_programs_courses_enrollments_partial_update
+      operationId: program_enrollments_v1_programs_courses_enrollments_partial_update
       description: Modify the program course enrollments of a list of learners
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters:
       - name: course_id
         in: path
@@ -3620,9 +3617,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/program_enrollments/v1/programs/{program_uuid}/courses/{course_id}/grades/:
+  /program_enrollments/v1/programs/{program_uuid}/courses/{course_id}/grades/:
     get:
-      operationId: api_program_enrollments_v1_programs_courses_grades_list
+      operationId: program_enrollments_v1_programs_courses_grades_list
       description: Defines the GET list endpoint for ProgramCourseGrade objects.
       parameters:
         - name: cursor
@@ -3639,7 +3636,7 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters:
       - name: course_id
         in: path
@@ -3649,9 +3646,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/program_enrollments/v1/programs/{program_uuid}/enrollments/:
+  /program_enrollments/v1/programs/{program_uuid}/enrollments/:
     get:
-      operationId: api_program_enrollments_v1_programs_enrollments_list
+      operationId: program_enrollments_v1_programs_enrollments_list
       description: Defines the GET list endpoint for ProgramEnrollment objects.
       parameters:
         - name: cursor
@@ -3668,42 +3665,42 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     post:
-      operationId: api_program_enrollments_v1_programs_enrollments_create
+      operationId: program_enrollments_v1_programs_enrollments_create
       description: Create program enrollments for a list of learners
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - program_enrollments
     put:
-      operationId: api_program_enrollments_v1_programs_enrollments_update
+      operationId: program_enrollments_v1_programs_enrollments_update
       description: Create/modify program enrollments for a list of learners
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     patch:
-      operationId: api_program_enrollments_v1_programs_enrollments_partial_update
+      operationId: program_enrollments_v1_programs_enrollments_partial_update
       description: Modify program enrollments for a list of learners
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters:
       - name: program_uuid
         in: path
         required: true
         type: string
-  /api/program_enrollments/v1/programs/{program_uuid}/overview/:
+  /program_enrollments/v1/programs/{program_uuid}/overview/:
     get:
-      operationId: api_program_enrollments_v1_programs_overview_list
+      operationId: program_enrollments_v1_programs_overview_list
       description: "Defines the GET endpoint for overviews of course enrollments\n\
         for a user as part of a program."
       parameters: []
@@ -3711,15 +3708,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - program_enrollments
     parameters:
       - name: program_uuid
         in: path
         required: true
         type: string
-  /api/team/v0/team_membership/:
+  /team/v0/team_membership/:
     get:
-      operationId: api_team_v0_team_membership_list
+      operationId: team_v0_team_membership_list
       description: GET /api/team/v0/team_membership
       parameters:
         - name: page
@@ -3736,36 +3733,36 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - team
     post:
-      operationId: api_team_v0_team_membership_create
+      operationId: team_v0_team_membership_create
       description: POST /api/team/v0/team_membership
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - team
     parameters: []
-  /api/team/v0/team_membership/{team_id},{username}:
+  /team/v0/team_membership/{team_id},{username}:
     get:
-      operationId: api_team_v0_team_membership_read
+      operationId: team_v0_team_membership_read
       description: GET /api/team/v0/team_membership/{team_id},{username}
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - team
     delete:
-      operationId: api_team_v0_team_membership_delete
+      operationId: team_v0_team_membership_delete
       description: DELETE /api/team/v0/team_membership/{team_id},{username}
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - team
     parameters:
       - name: team_id
         in: path
@@ -3775,9 +3772,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/team/v0/teams/:
+  /team/v0/teams/:
     get:
-      operationId: api_team_v0_teams_list
+      operationId: team_v0_teams_list
       description: GET /api/team/v0/teams/
       parameters:
         - name: page
@@ -3794,20 +3791,20 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - team
     post:
-      operationId: api_team_v0_teams_create
+      operationId: team_v0_teams_create
       description: POST /api/team/v0/teams/
       parameters: []
       responses:
         '201':
           description: ''
       tags:
-        - api
+        - team
     parameters: []
-  /api/team/v0/teams/{team_id}:
+  /team/v0/teams/{team_id}:
     get:
-      operationId: api_team_v0_teams_read
+      operationId: team_v0_teams_read
       description: Retrieves the specified resource using the RetrieveModelMixin.
       parameters: []
       responses:
@@ -3816,9 +3813,9 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - team
     patch:
-      operationId: api_team_v0_teams_partial_update
+      operationId: team_v0_teams_partial_update
       description: Checks for validation errors, then updates the model using the
         UpdateModelMixin.
       parameters: []
@@ -3828,9 +3825,9 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - team
     delete:
-      operationId: api_team_v0_teams_delete
+      operationId: team_v0_teams_delete
       description: DELETE /api/team/v0/teams/{team_id}
       parameters: []
       responses:
@@ -3839,15 +3836,15 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - team
     parameters:
       - name: team_id
         in: path
         required: true
         type: string
-  /api/team/v0/topics/:
+  /team/v0/topics/:
     get:
-      operationId: api_team_v0_topics_list
+      operationId: team_v0_topics_list
       description: GET /api/team/v0/topics/?course_id={course_id}
       parameters:
         - name: page
@@ -3864,18 +3861,18 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - team
     parameters: []
-  /api/team/v0/topics/{topic_id},{course_id}:
+  /team/v0/topics/{topic_id},{course_id}:
     get:
-      operationId: api_team_v0_topics_read
+      operationId: team_v0_topics_read
       description: GET /api/team/v0/topics/{topic_id},{course_id}/
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - team
     parameters:
       - name: course_id
         in: path
@@ -3885,9 +3882,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/third_party_auth/v0/providers/user_status:
+  /third_party_auth/v0/providers/user_status:
     get:
-      operationId: api_third_party_auth_v0_providers_user_status_list
+      operationId: third_party_auth_v0_providers_user_status_list
       summary: GET /api/third_party_auth/v0/providers/user_status/
       description: "**GET Response Values**\n{\n    \"accepts_logins\": true,\n  \
         \  \"name\": \"Google\",\n    \"disconnect_url\": \"/auth/disconnect/google-oauth2/?\"\
@@ -3898,11 +3895,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - third_party_auth
     parameters: []
-  /api/third_party_auth/v0/providers/{provider_id}{var}/users:
+  /third_party_auth/v0/providers/{provider_id}{var}/users:
     get:
-      operationId: api_third_party_auth_v0_providers_users_list
+      operationId: third_party_auth_v0_providers_users_list
       summary: Map between the third party auth account IDs (remote_id) and EdX username.
       description: "This API is intended to be a server-to-server endpoint. An on-campus\
         \ middleware or system should consume this.\n\n**Use Case**\n\n    Get a paginated\
@@ -3972,7 +3969,7 @@ paths:
                 items:
                   $ref: '#/definitions/UserMapping'
       tags:
-        - api
+        - third_party_auth
     parameters:
       - name: provider_id
         in: path
@@ -3982,9 +3979,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/third_party_auth/v0/users/:
+  /third_party_auth/v0/users/:
     get:
-      operationId: api_third_party_auth_v0_users_list
+      operationId: third_party_auth_v0_users_list
       summary: Read provider information for a user.
       description: "Allows reading the list of providers for a specified user.\n\n\
         Args:\n    request (Request): The HTTP GET request\n\nRequest Parameters:\n\
@@ -3996,11 +3993,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - third_party_auth
     parameters: []
-  /api/third_party_auth/v0/users/{username}:
+  /third_party_auth/v0/users/{username}:
     get:
-      operationId: api_third_party_auth_v0_users_read
+      operationId: third_party_auth_v0_users_read
       summary: Read provider information for a user.
       description: "Allows reading the list of providers for a specified user.\n\n\
         Args:\n    request (Request): The HTTP GET request\n    username (str): Fetch\
@@ -4011,15 +4008,15 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - third_party_auth
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/accounts:
+  /user/v1/accounts:
     get:
-      operationId: api_user_v1_accounts_list
+      operationId: user_v1_accounts_list
       description: GET /api/user/v1/accounts?username={username1,username2}
       parameters: []
       responses:
@@ -4028,11 +4025,11 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/deactivate_logout/:
+  /user/v1/accounts/deactivate_logout/:
     post:
-      operationId: api_user_v1_accounts_deactivate_logout_create
+      operationId: user_v1_accounts_deactivate_logout_create
       summary: POST /api/user/v1/accounts/deactivate_logout/
       description: "Marks the user as having no password set for deactivation purposes,\n\
         and logs the user out."
@@ -4041,11 +4038,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/replace_usernames/:
+  /user/v1/accounts/replace_usernames/:
     post:
-      operationId: api_user_v1_accounts_replace_usernames_create
+      operationId: user_v1_accounts_replace_usernames_create
       description: "POST /api/user/v1/accounts/replace_usernames/\n{\n    \"username_mappings\"\
         : [\n        {\"current_username_1\": \"desired_username_1\"},\n        {\"\
         current_username_2\": \"desired_username_2\"}\n    ]\n}\n\n**POST Parameters**\n\
@@ -4061,11 +4058,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retire/:
+  /user/v1/accounts/retire/:
     post:
-      operationId: api_user_v1_accounts_post
+      operationId: user_v1_accounts_post
       summary: POST /api/user/v1/accounts/retire/
       description: "{\n    'username': 'user_to_retire'\n}\n\nRetires the user with\
         \ the given username.  This includes\nretiring this username, the associated\
@@ -4075,11 +4072,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retire_misc/:
+  /user/v1/accounts/retire_misc/:
     post:
-      operationId: api_user_v1_accounts_post
+      operationId: user_v1_accounts_post
       summary: POST /api/user/v1/accounts/retire_misc/
       description: "{\n    'username': 'user_to_retire'\n}\n\nRetires the user with\
         \ the given username in the LMS."
@@ -4088,11 +4085,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retirement_cleanup/:
+  /user/v1/accounts/retirement_cleanup/:
     post:
-      operationId: api_user_v1_accounts_cleanup
+      operationId: user_v1_accounts_cleanup
       summary: POST /api/user/v1/accounts/retirement_cleanup/
       description: "{\n    'usernames': ['user1', 'user2', ...]\n}\n\nDeletes a batch\
         \ of retirement requests by username."
@@ -4101,11 +4098,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retirement_partner_report/:
+  /user/v1/accounts/retirement_partner_report/:
     post:
-      operationId: api_user_v1_accounts_retirement_partner_report_create
+      operationId: user_v1_accounts_retirement_partner_report_create
       summary: POST /api/user/v1/accounts/retirement_partner_report/
       description: "Returns the list of UserRetirementPartnerReportingStatus users\n\
         that are not already being processed and updates their status\nto indicate\
@@ -4115,9 +4112,9 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     put:
-      operationId: api_user_v1_accounts_retirement_partner_report_update
+      operationId: user_v1_accounts_retirement_partner_report_update
       summary: PUT /api/user/v1/accounts/retirement_partner_report/
       description: "{\n    'username': 'user_to_retire'\n}\n\nCreates a UserRetirementPartnerReportingStatus\
         \ object for the given user\nas part of the retirement pipeline."
@@ -4126,11 +4123,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retirement_partner_report_cleanup/:
+  /user/v1/accounts/retirement_partner_report_cleanup/:
     post:
-      operationId: api_user_v1_accounts_retirement_partner_cleanup
+      operationId: user_v1_accounts_retirement_partner_cleanup
       summary: POST /api/user/v1/accounts/retirement_partner_report_cleanup/
       description: "[{'original_username': 'user1'}, {'original_username': 'user2'},\
         \ ...]\n\nDeletes UserRetirementPartnerReportingStatus objects for a list\
@@ -4140,11 +4137,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retirement_queue/:
+  /user/v1/accounts/retirement_queue/:
     get:
-      operationId: api_user_v1_accounts_retirement_queue
+      operationId: user_v1_accounts_retirement_queue
       summary: "GET /api/user/v1/accounts/retirement_queue/\n{'cool_off_days': 7,\
         \ 'states': ['PENDING', 'COMPLETE']}"
       description: "Returns the list of RetirementStatus users in the given states\
@@ -4154,11 +4151,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/retirements_by_status_and_date/:
+  /user/v1/accounts/retirements_by_status_and_date/:
     get:
-      operationId: api_user_v1_accounts_retirements_by_status_and_date
+      operationId: user_v1_accounts_retirements_by_status_and_date
       summary: "GET /api/user/v1/accounts/retirements_by_status_and_date/\n?start_date=2018-09-05&end_date=2018-09-07&state=COMPLETE"
       description: "Returns a list of UserRetirementStatusSerializer serialized\n\
         RetirementStatus rows in the given state that were created in the\nretirement\
@@ -4169,11 +4166,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/update_retirement_status/:
+  /user/v1/accounts/update_retirement_status/:
     patch:
-      operationId: api_user_v1_accounts_update_retirement_status_partial_update
+      operationId: user_v1_accounts_update_retirement_status_partial_update
       summary: PATCH /api/user/v1/accounts/update_retirement_status/
       description: "{\n    'username': 'user_to_retire',\n    'new_state': 'LOCKING_COMPLETE',\n\
         \    'response': 'User account locked and logged out.'\n}\n\nUpdates the RetirementStatus\
@@ -4187,11 +4184,11 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/accounts/{username}:
+  /user/v1/accounts/{username}:
     get:
-      operationId: api_user_v1_accounts_read
+      operationId: user_v1_accounts_read
       description: GET /api/user/v1/accounts/{username}/
       parameters: []
       responses:
@@ -4200,9 +4197,9 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - user
     patch:
-      operationId: api_user_v1_accounts_partial_update
+      operationId: user_v1_accounts_partial_update
       summary: PATCH /api/user/v1/accounts/{username}/
       description: "Note that this implementation is the \"merge patch\" implementation\
         \ proposed in\nhttps://tools.ietf.org/html/rfc7396. The content_type must\
@@ -4215,15 +4212,15 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - user
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/accounts/{username}/deactivate/:
+  /user/v1/accounts/{username}/deactivate/:
     post:
-      operationId: api_user_v1_accounts_deactivate_create
+      operationId: user_v1_accounts_deactivate_create
       summary: POST /api/user/v1/accounts/{username}/deactivate/
       description: Marks the user as having no password set for deactivation purposes.
       parameters: []
@@ -4231,15 +4228,15 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/accounts/{username}/image:
+  /user/v1/accounts/{username}/image:
     post:
-      operationId: api_user_v1_accounts_image_create
+      operationId: user_v1_accounts_image_create
       description: POST /api/user/v1/accounts/{username}/image
       parameters: []
       responses:
@@ -4249,9 +4246,9 @@ paths:
         - multipart/form-data
         - application/x-www-form-urlencoded
       tags:
-        - api
+        - user
     delete:
-      operationId: api_user_v1_accounts_image_delete
+      operationId: user_v1_accounts_image_delete
       description: DELETE /api/user/v1/accounts/{username}/image
       parameters: []
       responses:
@@ -4261,15 +4258,15 @@ paths:
         - multipart/form-data
         - application/x-www-form-urlencoded
       tags:
-        - api
+        - user
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/accounts/{username}/retirement_status/:
+  /user/v1/accounts/{username}/retirement_status/:
     get:
-      operationId: api_user_v1_accounts_retirement_status_read
+      operationId: user_v1_accounts_retirement_status_read
       description: "GET /api/user/v1/accounts/{username}/retirement_status/\nReturns\
         \ the RetirementStatus of a given user, or 404 if that row\ndoesn't exist."
       parameters: []
@@ -4277,30 +4274,30 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - user
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/accounts/{username}/verification_status/:
+  /user/v1/accounts/{username}/verification_status/:
     get:
-      operationId: api_user_v1_accounts_verification_status_read
+      operationId: user_v1_accounts_verification_status_read
       description: IDVerificationStatus detail endpoint.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - user
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/me:
+  /user/v1/me:
     get:
-      operationId: api_user_v1_get
+      operationId: user_v1_get
       description: GET /api/user/v1/me
       parameters: []
       responses:
@@ -4309,11 +4306,11 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - user
     parameters: []
-  /api/user/v1/preferences/{username}:
+  /user/v1/preferences/{username}:
     get:
-      operationId: api_user_v1_preferences_read
+      operationId: user_v1_preferences_read
       description: GET /api/user/v1/preferences/{username}/
       parameters: []
       responses:
@@ -4322,9 +4319,9 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - user
     patch:
-      operationId: api_user_v1_preferences_partial_update
+      operationId: user_v1_preferences_partial_update
       description: PATCH /api/user/v1/preferences/{username}/
       parameters: []
       responses:
@@ -4333,40 +4330,40 @@ paths:
       consumes:
         - application/merge-patch+json
       tags:
-        - api
+        - user
     parameters:
       - name: username
         in: path
         required: true
         type: string
-  /api/user/v1/preferences/{username}/{preference_key}:
+  /user/v1/preferences/{username}/{preference_key}:
     get:
-      operationId: api_user_v1_preferences_read
+      operationId: user_v1_preferences_read
       description: GET /api/user/v1/preferences/{username}/{preference_key}
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - user
     put:
-      operationId: api_user_v1_preferences_update
+      operationId: user_v1_preferences_update
       description: PUT /api/user/v1/preferences/{username}/{preference_key}
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - user
     delete:
-      operationId: api_user_v1_preferences_delete
+      operationId: user_v1_preferences_delete
       description: DELETE /api/user/v1/preferences/{username}/{preference_key}
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - user
     parameters:
       - name: preference_key
         in: path
@@ -4376,9 +4373,9 @@ paths:
         in: path
         required: true
         type: string
-  /api/user/v1/validation/registration:
+  /user/v1/validation/registration:
     post:
-      operationId: api_user_v1_validation_registration_create
+      operationId: user_v1_validation_registration_create
       summary: POST /api/user/v1/validation/registration/
       description: "Expects request of the form\n>>> {\n>>>     \"name\": \"Dan the\
         \ Validator\",\n>>>     \"username\": \"mslm\",\n>>>     \"email\": \"mslm@gmail.com\"\
@@ -4393,11 +4390,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - user
     parameters: []
-  /api/val/v0/videos/:
+  /val/v0/videos/:
     get:
-      operationId: api_val_v0_videos_list
+      operationId: val_v0_videos_list
       description: GETs or POST video objects
       parameters:
         - name: page
@@ -4434,9 +4431,9 @@ paths:
                 items:
                   $ref: '#/definitions/Video'
       tags:
-        - api
+        - val
     post:
-      operationId: api_val_v0_videos_create
+      operationId: val_v0_videos_create
       description: GETs or POST video objects
       parameters:
         - name: data
@@ -4450,11 +4447,11 @@ paths:
           schema:
             $ref: '#/definitions/Video'
       tags:
-        - api
+        - val
     parameters: []
-  /api/val/v0/videos/missing-hls/:
+  /val/v0/videos/missing-hls/:
     post:
-      operationId: api_val_v0_videos_missing-hls_create
+      operationId: val_v0_videos_missing-hls_create
       summary: 'Retrieve video IDs that are missing HLS profiles. This endpoint supports
         2 types of input data:'
       description: "1. If we want a batch of video ids which are missing HLS profile\
@@ -4474,9 +4471,9 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - val
     put:
-      operationId: api_val_v0_videos_missing-hls_update
+      operationId: val_v0_videos_missing-hls_update
       summary: Update a single profile for a given video.
       description: "Example request data:\n    {\n        'edx_video_id': '1234'\n\
         \        'profile': 'hls',\n        'encode_data': {\n            'url': 'foo.com/qwe.m3u8'\n\
@@ -4486,22 +4483,22 @@ paths:
         '200':
           description: ''
       tags:
-        - api
+        - val
     parameters: []
-  /api/val/v0/videos/status/:
+  /val/v0/videos/status/:
     patch:
-      operationId: api_val_v0_videos_status_partial_update
+      operationId: val_v0_videos_status_partial_update
       description: Update the status of a video.
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - api
+        - val
     parameters: []
-  /api/val/v0/videos/video-images/update/:
+  /val/v0/videos/video-images/update/:
     post:
-      operationId: api_val_v0_videos_video-images_update_create
+      operationId: val_v0_videos_video-images_update_create
       description: Update a course video image instance with auto generated image
         names.
       parameters: []
@@ -4509,11 +4506,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - val
     parameters: []
-  /api/val/v0/videos/video-transcripts/create/:
+  /val/v0/videos/video-transcripts/create/:
     post:
-      operationId: api_val_v0_videos_video-transcripts_create_create
+      operationId: val_v0_videos_video-transcripts_create_create
       summary: Creates a video transcript instance with the given information.
       description: "Arguments:\n    request: A WSGI request."
       parameters: []
@@ -4521,11 +4518,11 @@ paths:
         '201':
           description: ''
       tags:
-        - api
+        - val
     parameters: []
-  /api/val/v0/videos/{edx_video_id}:
+  /val/v0/videos/{edx_video_id}:
     get:
-      operationId: api_val_v0_videos_read
+      operationId: val_v0_videos_read
       description: Gets a video instance given its edx_video_id
       parameters: []
       responses:
@@ -4534,9 +4531,9 @@ paths:
           schema:
             $ref: '#/definitions/Video'
       tags:
-        - api
+        - val
     put:
-      operationId: api_val_v0_videos_update
+      operationId: val_v0_videos_update
       description: Gets a video instance given its edx_video_id
       parameters:
         - name: data
@@ -4550,9 +4547,9 @@ paths:
           schema:
             $ref: '#/definitions/Video'
       tags:
-        - api
+        - val
     patch:
-      operationId: api_val_v0_videos_partial_update
+      operationId: val_v0_videos_partial_update
       description: Gets a video instance given its edx_video_id
       parameters:
         - name: data
@@ -4566,1686 +4563,23 @@ paths:
           schema:
             $ref: '#/definitions/Video'
       tags:
-        - api
+        - val
     delete:
-      operationId: api_val_v0_videos_delete
+      operationId: val_v0_videos_delete
       description: Gets a video instance given its edx_video_id
       parameters: []
       responses:
         '204':
           description: ''
       tags:
-        - api
+        - val
     parameters:
       - name: edx_video_id
         in: path
         required: true
         type: string
         pattern: ^[a-zA-Z0-9\-_]*$
-  /consent/api/v1/data_sharing_consent:
-    get:
-      operationId: consent_api_v1_data_sharing_consent_list
-      description: "GET /consent/api/v1/data_sharing_consent?username=bob&course_id=id&enterprise_customer_uuid=uuid\n\
-        *username*\n    The edX username from whom to get consent.\n*course_id*\n\
-        \    The course for which consent is granted.\n*enterprise_customer_uuid*\n\
-        \    The UUID of the enterprise customer that requires consent."
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - consent
-    post:
-      operationId: consent_api_v1_data_sharing_consent_create
-      summary: POST /consent/api/v1/data_sharing_consent
-      description: "Requires a JSON object of the following format:\n>>> {\n>>>  \
-        \   \"username\": \"bob\",\n>>>     \"course_id\": \"course-v1:edX+DemoX+Demo_Course\"\
-        ,\n>>>     \"enterprise_customer_uuid\": \"enterprise-uuid-goes-right-here\"\
-        \n>>> }\n\nKeys:\n*username*\n    The edX username from whom to get consent.\n\
-        *course_id*\n    The course for which consent is granted.\n*enterprise_customer_uuid*\n\
-        \    The UUID of the enterprise customer that requires consent."
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - consent
-    delete:
-      operationId: consent_api_v1_data_sharing_consent_delete
-      summary: DELETE /consent/api/v1/data_sharing_consent
-      description: "Requires a JSON object of the following format:\n>>> {\n>>>  \
-        \   \"username\": \"bob\",\n>>>     \"course_id\": \"course-v1:edX+DemoX+Demo_Course\"\
-        ,\n>>>     \"enterprise_customer_uuid\": \"enterprise-uuid-goes-right-here\"\
-        \n>>> }\n\nKeys:\n*username*\n    The edX username from whom to get consent.\n\
-        *course_id*\n    The course for which consent is granted.\n*enterprise_customer_uuid*\n\
-        \    The UUID of the enterprise customer that requires consent."
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - consent
-    parameters: []
-  /cornerstone/course-list:
-    get:
-      operationId: cornerstone_course-list_list
-      summary: '**Use Cases**'
-      description: "Get a list of courses to share on cornerstone filtered by a enterprise\
-        \ customer.\n\n**Example Requests**\n\n    GET /cornerstone/course-list?ciid={customer_uuid}\n\
-        \n**Query Parameters for GET**\n\n    * ciid: Filters the result to courses\
-        \ available in catalogs corresponding to the\n      given ciid where value\
-        \ of ciid should be uuid of any enterprise customer.\n\n**Response Values**\n\
-        \n    If the request for information about the course list is successful,\
-        \ an HTTP 200 \"OK\" response\n    is returned.\n\n    The HTTP 200 response\
-        \ has the following values.\n\n    * JSON response with a list of the course\
-        \ objects. Each course object has these fields\n\n        * ID: Unique Course\
-        \ id.\n\n        * Title: Title of course.\n\n        * Description: Course\
-        \ overview.\n\n        * URL: URL where user is redirected to.\n\n       \
-        \ * Thumbnail: Url of the course thumbnail image.\n\n        * IsActive: Boolean\
-        \ value indicating if course is active and available.\n\n        * LastModifiedUTC:\
-        \ Time of the last modification made.\n\n        * Duration: Course duration.\n\
-        \n        * Owners: List organizations that are course owners.\n\n       \
-        \ * Languages: List of available languages for a course.\n\n        * Subjects:\
-        \ List of subjects for course.\n\n    If the user is not logged in, a 401\
-        \ error is returned.\n\n    If the user is not global staff, a 403 error is\
-        \ returned.\n\n    If ciid parameter is not provided, a 400 error is returned.\n\
-        \n    If the specified ciid is not valid or any of registered enterprise customers\n\
-        \    a 404 error is returned.\n\n    If the specified enterprise does not\
-        \ have course catalog an HTTP 200 \"OK\" response is returned with an\n  \
-        \  empty result."
-      parameters:
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-      tags:
-        - cornerstone
-    parameters: []
-  /courses/yt_video_metadata:
-    get:
-      operationId: courses_yt_video_metadata_list
-      description: "Will hit the youtube API if the key is available in settings\n\
-        :return: youtube video metadata"
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - courses
-    parameters: []
-  /courses/{course_id}/teams/:
-    get:
-      operationId: courses_teams_list
-      summary: Renders the teams dashboard, which is shown on the "Teams" tab.
-      description: "Raises a 404 if the course specified by course_id does not exist,\
-        \ the\nuser is not registered for the course, or the teams feature is not\
-        \ enabled."
-      parameters:
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-      tags:
-        - courses
-    parameters:
-      - name: course_id
-        in: path
-        required: true
-        type: string
-  /courses/{course_id}/xblock/{usage_id}/view/{view_name}:
-    get:
-      operationId: courses_xblock_view_read
-      summary: Returns the rendered view of a given XBlock, with related resources
-      description: "Returns a json object containing two keys:\n    html: The rendered\
-        \ html of the view\n    resources: A list of tuples where the first element\
-        \ is the resource hash, and\n        the second is the resource description"
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - courses
-    parameters:
-      - name: course_id
-        in: path
-        required: true
-        type: string
-      - name: usage_id
-        in: path
-        required: true
-        type: string
-      - name: view_name
-        in: path
-        required: true
-        type: string
-  /csrf/api/v1/token:
-    get:
-      operationId: csrf_api_v1_token_list
-      description: GET /csrf/api/v1/token
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - csrf
-    parameters: []
-  /embargo/v1/course_access/:
-    get:
-      operationId: embargo_v1_course_access_list
-      summary: GET /api/embargo/v1/course_access/
-      description: "Arguments:\n    request (HttpRequest)\n\nReturn:\n    Response:\
-        \ True or False depending on the check."
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - embargo
-    parameters: []
-  /enterprise/api/v1/enterprise-course-enrollment/:
-    get:
-      operationId: enterprise_api_v1_enterprise-course-enrollment_list
-      description: API views for the ``enterprise-course-enrollment`` API endpoint.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: enterprise_customer_user
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: course_id
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    post:
-      operationId: enterprise_api_v1_enterprise-course-enrollment_create
-      description: API views for the ``enterprise-course-enrollment`` API endpoint.
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-course-enrollment/{id}/:
-    get:
-      operationId: enterprise_api_v1_enterprise-course-enrollment_read
-      description: API views for the ``enterprise-course-enrollment`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    put:
-      operationId: enterprise_api_v1_enterprise-course-enrollment_update
-      description: API views for the ``enterprise-course-enrollment`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    patch:
-      operationId: enterprise_api_v1_enterprise-course-enrollment_partial_update
-      description: API views for the ``enterprise-course-enrollment`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    delete:
-      operationId: enterprise_api_v1_enterprise-course-enrollment_delete
-      description: API views for the ``enterprise-course-enrollment`` API endpoint.
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - enterprise
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this enterprise course enrollment.
-        required: true
-        type: integer
-  /enterprise/api/v1/enterprise-customer-branding/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer-branding_list
-      description: API views for the ``enterprise-customer-branding`` API endpoint.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: enterprise_customer__slug
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomerBrandingConfiguration'
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-customer-branding/{enterprise_customer__slug}/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer-branding_read
-      description: API views for the ``enterprise-customer-branding`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerBrandingConfiguration'
-      tags:
-        - enterprise
-    parameters:
-      - name: enterprise_customer__slug
-        in: path
-        required: true
-        type: string
-  /enterprise/api/v1/enterprise-customer-entitlement/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer-entitlement_list
-      description: API views for the ``enterprise-customer-entitlements`` API endpoint.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: enterprise_customer
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: entitlement_id
-          in: query
-          description: ''
-          required: false
-          type: number
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomerEntitlement'
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-customer-entitlement/{id}/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer-entitlement_read
-      description: API views for the ``enterprise-customer-entitlements`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerEntitlement'
-      tags:
-        - enterprise
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Enterprise Customer Entitlement.
-        required: true
-        type: integer
-  /enterprise/api/v1/enterprise-customer/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer_list
-      description: API views for the ``enterprise-customer`` API endpoint.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: uuid
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: slug
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: site
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enable_data_sharing_consent
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enforce_data_sharing_consent
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    post:
-      operationId: enterprise_api_v1_enterprise-customer_create
-      description: API views for the ``enterprise-customer`` API endpoint.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-customer/dashboard_list/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer_dashboard_list
-      description: Wrap for the view function.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: uuid
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: slug
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: site
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enable_data_sharing_consent
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enforce_data_sharing_consent
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-customer/with_access_to/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer_with_access_to
-      description: Returns the list of enterprise customers the user has a specified
-        group permission access to.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: uuid
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: slug
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: name
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: active
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: site
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enable_data_sharing_consent
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enforce_data_sharing_consent
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-customer/{uuid}/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer_read
-      description: API views for the ``enterprise-customer`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    put:
-      operationId: enterprise_api_v1_enterprise-customer_update
-      description: API views for the ``enterprise-customer`` API endpoint.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    patch:
-      operationId: enterprise_api_v1_enterprise-customer_partial_update
-      description: API views for the ``enterprise-customer`` API endpoint.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    delete:
-      operationId: enterprise_api_v1_enterprise-customer_delete
-      description: API views for the ``enterprise-customer`` API endpoint.
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - enterprise
-    parameters:
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise-customer/{uuid}/contains_content_items/:
-    get:
-      operationId: enterprise_api_v1_enterprise-customer_contains_content_items
-      description: Wrap for the view function.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    parameters:
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise-customer/{uuid}/course_enrollments/:
-    post:
-      operationId: enterprise_api_v1_enterprise-customer_course_enrollments
-      description: Wrap for the view function.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomer'
-      tags:
-        - enterprise
-    parameters:
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise-learner/:
-    get:
-      operationId: enterprise_api_v1_enterprise-learner_list
-      description: API views for the ``enterprise-learner`` API endpoint.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: enterprise_customer
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: user_id
-          in: query
-          description: ''
-          required: false
-          type: number
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    post:
-      operationId: enterprise_api_v1_enterprise-learner_create
-      description: API views for the ``enterprise-learner`` API endpoint.
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise-learner/{id}/:
-    get:
-      operationId: enterprise_api_v1_enterprise-learner_read
-      description: API views for the ``enterprise-learner`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    put:
-      operationId: enterprise_api_v1_enterprise-learner_update
-      description: API views for the ``enterprise-learner`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    patch:
-      operationId: enterprise_api_v1_enterprise-learner_partial_update
-      description: API views for the ``enterprise-learner`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    delete:
-      operationId: enterprise_api_v1_enterprise-learner_delete
-      description: API views for the ``enterprise-learner`` API endpoint.
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - enterprise
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Enterprise Customer Learner.
-        required: true
-        type: integer
-  /enterprise/api/v1/enterprise-learner/{id}/entitlements/:
-    get:
-      operationId: enterprise_api_v1_enterprise-learner_entitlements
-      summary: Retrieve the list of entitlements available to this learner.
-      description: "Only those entitlements are returned that satisfy enterprise customer's\
-        \ data sharing setting.\n\nArguments:\n    request (HttpRequest): Reference\
-        \ to in-progress request instance.\n    pk (Int): Primary key value of the\
-        \ selected enterprise learner.\n\nReturns:\n    (HttpResponse): Response object\
-        \ containing a list of learner's entitlements."
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Enterprise Customer Learner.
-        required: true
-        type: integer
-  /enterprise/api/v1/enterprise_catalog_query/{catalog_query_id}/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalog_query_read
-      description: API endpoint for fetching a enterprise catalog query.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - enterprise
-    parameters:
-      - name: catalog_query_id
-        in: path
-        required: true
-        type: string
-  /enterprise/api/v1/enterprise_catalogs/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalogs_list
-      description: Wrap for the view function.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: uuid
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: enterprise_customer
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomerCatalog'
-      produces:
-        - application/json
-        - application/xml
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise_catalogs/{uuid}/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalogs_read
-      description: Wrap for the view function.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerCatalogDetail'
-      produces:
-        - application/json
-        - application/xml
-      tags:
-        - enterprise
-    parameters:
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer Catalog.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise_catalogs/{uuid}/contains_content_items/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalogs_contains_content_items
-      summary: Return whether or not the EnterpriseCustomerCatalog contains the specified
-        content.
-      description: "Multiple course_run_ids and/or program_uuids query parameters\
-        \ can be sent to this view to check\nfor their existence in the EnterpriseCustomerCatalog.\
-        \ At least one course run key\nor program UUID value must be included in the\
-        \ request."
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerCatalog'
-      produces:
-        - application/json
-        - application/xml
-      tags:
-        - enterprise
-    parameters:
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer Catalog.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise_catalogs/{uuid}/course_runs/{course_id}/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalogs_course_run_detail
-      description: Wrap for the view function.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerCatalog'
-      produces:
-        - application/json
-        - application/xml
-      tags:
-        - enterprise
-    parameters:
-      - name: course_id
-        in: path
-        required: true
-        type: string
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer Catalog.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise_catalogs/{uuid}/courses/{course_key}/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalogs_course_detail
-      description: Wrap for the view function.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerCatalog'
-      produces:
-        - application/json
-        - application/xml
-      tags:
-        - enterprise
-    parameters:
-      - name: course_key
-        in: path
-        required: true
-        type: string
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer Catalog.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise_catalogs/{uuid}/programs/{program_uuid}/:
-    get:
-      operationId: enterprise_api_v1_enterprise_catalogs_program_detail
-      description: Wrap for the view function.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerCatalog'
-      produces:
-        - application/json
-        - application/xml
-      tags:
-        - enterprise
-    parameters:
-      - name: program_uuid
-        in: path
-        required: true
-        type: string
-      - name: uuid
-        in: path
-        description: A UUID string identifying this Enterprise Customer Catalog.
-        required: true
-        type: string
-        format: uuid
-  /enterprise/api/v1/enterprise_customer_reporting/:
-    get:
-      operationId: enterprise_api_v1_enterprise_customer_reporting_list
-      description: API views for the ``enterprise-customer-reporting`` API endpoint.
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: enterprise_customer
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EnterpriseCustomerReportingConfiguration'
-      tags:
-        - enterprise
-    parameters: []
-  /enterprise/api/v1/enterprise_customer_reporting/{id}/:
-    get:
-      operationId: enterprise_api_v1_enterprise_customer_reporting_read
-      description: API views for the ``enterprise-customer-reporting`` API endpoint.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EnterpriseCustomerReportingConfiguration'
-      tags:
-        - enterprise
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this enterprise customer reporting
-          configuration.
-        required: true
-        type: integer
-  /enterprise/api/v1/request_codes:
-    post:
-      operationId: enterprise_api_v1_request_codes_create
-      description: Wrap for the view function.
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - enterprise
-    parameters: []
-  /notifier_api/v1/users/:
-    get:
-      operationId: notifier_api_v1_users_list
-      description: "An endpoint that the notifier can use to retrieve users who have\
-        \ enabled\ndaily forum digests, including all information that the notifier\
-        \ needs about\nsuch users."
-      parameters:
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/NotifierUser'
-      tags:
-        - notifier_api
-    parameters: []
-  /notifier_api/v1/users/{id}/:
-    get:
-      operationId: notifier_api_v1_users_read
-      description: "An endpoint that the notifier can use to retrieve users who have\
-        \ enabled\ndaily forum digests, including all information that the notifier\
-        \ needs about\nsuch users."
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/NotifierUser'
-      tags:
-        - notifier_api
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this user.
-        required: true
-        type: integer
-  /oauth2/login/:
-    post:
-      operationId: oauth2_login_create
-      description: Handler for the POST method to this view.
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - oauth2
-    parameters: []
-  /user_api/v1/account/login_session/:
-    get:
-      operationId: user_api_v1_account_login_session_list
-      description: HTTP end-points for logging in users.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - user_api
-    post:
-      operationId: user_api_v1_account_login_session_create
-      summary: Log in a user.
-      description: "You must send all required form fields with the request.\n\nYou\
-        \ can optionally send an `analytics` param with a JSON-encoded\nobject with\
-        \ additional info to include in the login analytics event.\nCurrently, the\
-        \ only supported field is \"enroll_course_id\" to indicate\nthat the user\
-        \ logged in while enrolling in a particular course.\n\nArguments:\n    request\
-        \ (HttpRequest)\n\nReturns:\n    HttpResponse: 200 on success\n    HttpResponse:\
-        \ 400 if the request is not valid.\n    HttpResponse: 403 if authentication\
-        \ failed.\n        403 with content \"third-party-auth\" if the user\n   \
-        \     has successfully authenticated with a third party provider\n       \
-        \ but does not have a linked account.\n    HttpResponse: 302 if redirecting\
-        \ to another page.\n\nExample Usage:\n\n    POST /user_api/v1/login_session\n\
-        \    with POST params `email`, `password`, and `remember`.\n\n    200 OK"
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/account/password_reset/:
-    get:
-      operationId: user_api_v1_account_password_reset_list
-      description: HTTP end-point for GETting a description of the password reset
-        form.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/account/registration/:
-    get:
-      operationId: user_api_v1_account_registration_list
-      description: HTTP end-points for creating a new user.
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - user_api
-    post:
-      operationId: user_api_v1_account_registration_create
-      summary: Create the user's account.
-      description: "You must send all required form fields with the request.\n\nYou\
-        \ can optionally send a \"course_id\" param to indicate in analytics\nevents\
-        \ that the user registered while enrolling in a particular course.\n\nArguments:\n\
-        \    request (HTTPRequest)\n\nReturns:\n    HttpResponse: 200 on success\n\
-        \    HttpResponse: 400 if the request is not valid.\n    HttpResponse: 409\
-        \ if an account with the given username or email\n        address already\
-        \ exists\n    HttpResponse: 403 operation not allowed"
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/forum_roles/{name}/users/:
-    get:
-      operationId: user_api_v1_forum_roles_users_list
-      description: Forum roles are represented by a list of user dicts
-      parameters:
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/user_api.User'
-      tags:
-        - user_api
-    parameters:
-      - name: name
-        in: path
-        required: true
-        type: string
-  /user_api/v1/preferences/email_opt_in/:
-    post:
-      operationId: user_api_v1_preferences_email_opt_in_create
-      summary: Post function for updating the email opt in preference.
-      description: "Allows the modification or creation of the email opt in preference\
-        \ at an\norganizational level.\n\nArgs:\n    request (Request): The request\
-        \ should contain the following POST parameters:\n        * course_id: The\
-        \ slash separated course ID. Used to determine the organization\n        \
-        \    for this preference setting.\n        * email_opt_in: \"True\" or \"\
-        False\" to determine if the user is opting in for emails from\n          \
-        \  this organization. If the string does not match \"True\" (case insensitive)\
-        \ it will\n            assume False."
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/preferences/time_zones/:
-    get:
-      operationId: user_api_v1_preferences_time_zones_list
-      summary: '**Use Cases**'
-      description: "Retrieves a list of all time zones, by default, or common time\
-        \ zones for country, if given\n\n    The country is passed in as its ISO 3166-1\
-        \ Alpha-2 country code as an\n    optional 'country_code' argument. The country\
-        \ code is also case-insensitive.\n\n**Example Requests**\n\n    GET /user_api/v1/preferences/time_zones/\n\
-        \n    GET /user_api/v1/preferences/time_zones/?country_code=FR\n\n**Example\
-        \ GET Response**\n\n    If the request is successful, an HTTP 200 \"OK\" response\
-        \ is returned along with a\n    list of time zone dictionaries for all time\
-        \ zones or just for time zones commonly\n    used in a country, if given.\n\
-        \n    Each time zone dictionary contains the following values.\n\n       \
-        \ * time_zone: The name of the time zone.\n        * description: The display\
-        \ version of the time zone"
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/CountryTimeZone'
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/preferences/{pref_key}/users/:
-    get:
-      operationId: user_api_v1_preferences_users_list
-      description: DRF class for listing a user's preferences
-      parameters:
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/user_api.User'
-      tags:
-        - user_api
-    parameters:
-      - name: pref_key
-        in: path
-        required: true
-        type: string
-  /user_api/v1/user_prefs/:
-    get:
-      operationId: user_api_v1_user_prefs_list
-      description: DRF class for interacting with the UserPreference ORM
-      parameters:
-        - name: key
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: user
-          in: query
-          description: ''
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/UserPreference'
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/user_prefs/{id}/:
-    get:
-      operationId: user_api_v1_user_prefs_read
-      description: DRF class for interacting with the UserPreference ORM
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserPreference'
-      tags:
-        - user_api
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this user preference.
-        required: true
-        type: integer
-  /user_api/v1/users/:
-    get:
-      operationId: user_api_v1_users_list
-      description: DRF class for interacting with the User ORM object
-      parameters:
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/user_api.User'
-      tags:
-        - user_api
-    parameters: []
-  /user_api/v1/users/{id}/:
-    get:
-      operationId: user_api_v1_users_read
-      description: DRF class for interacting with the User ORM object
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/user_api.User'
-      tags:
-        - user_api
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this user.
-        required: true
-        type: integer
-  /zendesk_proxy/v0:
-    post:
-      operationId: zendesk_proxy_v0_create
-      description: "request body is expected to look like this:\n{\n    \"name\":\
-        \ \"John Q. Student\",\n    \"email\": {\n        \"from\": \"JohnQStudent@realemailhost.com\"\
-        ,\n        \"message\": \"I, John Q. Student, am having problems for the following\
-        \ reasons: ...\",\n        \"subject\": \"Help Request\"\n    },\n    \"tags\"\
-        : [\"zendesk_help_request\"]\n}"
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - zendesk_proxy
-    parameters: []
-  /zendesk_proxy/v1:
-    post:
-      operationId: zendesk_proxy_v1_create
-      description: "request body is expected to look like this:\n{\n    \"requester\"\
-        : {\n        \"email\": \"john@example.com\",\n        \"name\": \"name\"\n\
-        \    },\n    \"subject\": \"test subject\",\n    \"comment\": {\n        \"\
-        body\": \"message details\",\n        \"uploads\": ['file_token'],\n    },\n\
-        \    \"custom_fields\": [\n        {\n            \"id\": '001',\n       \
-        \     \"value\": 'demo-course'\n        }\n    ],\n    \"tags\": [\"LMS\"\
-        ]\n}"
-      parameters: []
-      responses:
-        '201':
-          description: ''
-      tags:
-        - zendesk_proxy
-    parameters: []
 definitions:
-  ApiAccessRequest:
-    required:
-      - user
-      - website
-      - reason
-      - site
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      created:
-        title: Created
-        type: string
-        format: date-time
-        readOnly: true
-      modified:
-        title: Modified
-        type: string
-        format: date-time
-        readOnly: true
-      user:
-        title: User
-        type: integer
-      status:
-        title: Status
-        description: Status of this API access request
-        type: string
-        enum:
-          - pending
-          - denied
-          - approved
-      website:
-        title: Website
-        description: The URL of the website associated with this API user.
-        type: string
-        format: uri
-        maxLength: 200
-        minLength: 1
-      reason:
-        title: Reason
-        description: The reason this user wants to access the API.
-        type: string
-        minLength: 1
-      company_name:
-        title: Company name
-        type: string
-        maxLength: 255
-        minLength: 1
-      company_address:
-        title: Company address
-        type: string
-        maxLength: 255
-        minLength: 1
-      site:
-        title: Site
-        type: integer
-      contacted:
-        title: Contacted
-        type: boolean
   BadgeClass:
     title: Badge class
     required:
@@ -6311,31 +4645,6 @@ definitions:
         format: uri
         maxLength: 200
         minLength: 1
-      created:
-        title: Created
-        type: string
-        format: date-time
-        readOnly: true
-  Bookmark:
-    required:
-      - course_id
-      - usage_id
-    type: object
-    properties:
-      id:
-        title: Id
-        type: string
-        readOnly: true
-      course_id:
-        title: Course id
-        type: string
-      usage_id:
-        title: Usage id
-        type: string
-      block_type:
-        title: Block type
-        type: string
-        readOnly: true
       created:
         title: Created
         type: string
@@ -7112,6 +5421,31 @@ definitions:
         title: Certificate
         type: string
         readOnly: true
+  NotifierUser:
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      email:
+        title: Email address
+        type: string
+        format: email
+        readOnly: true
+        minLength: 1
+      name:
+        title: Name
+        type: string
+        readOnly: true
+      preferences:
+        title: Preferences
+        type: string
+        readOnly: true
+      course_info:
+        title: Course info
+        type: string
+        readOnly: true
   Organization:
     required:
       - name
@@ -7247,397 +5581,3 @@ definitions:
         type: string
         maxLength: 255
         minLength: 1
-  EnterpriseCustomerBrandingConfiguration:
-    required:
-      - enterprise_customer
-    type: object
-    properties:
-      enterprise_customer:
-        title: Enterprise customer
-        type: string
-        format: uuid
-      enterprise_slug:
-        title: Enterprise slug
-        type: string
-        readOnly: true
-      logo:
-        title: Logo
-        description: Logo images must be in .png format.
-        type: string
-        readOnly: true
-        x-nullable: true
-        format: uri
-  EnterpriseCustomerEntitlement:
-    required:
-      - enterprise_customer
-      - entitlement_id
-    type: object
-    properties:
-      enterprise_customer:
-        title: Enterprise customer
-        type: string
-        format: uuid
-      entitlement_id:
-        title: Seat Entitlement
-        description: Enterprise customer's entitlement id for relationship with e-commerce
-          coupon.
-        type: integer
-        maximum: 4294967295
-        minimum: 0
-  Site:
-    title: Site
-    required:
-      - domain
-      - name
-    type: object
-    properties:
-      domain:
-        title: Domain name
-        type: string
-        maxLength: 100
-        minLength: 1
-      name:
-        title: Display name
-        type: string
-        maxLength: 50
-        minLength: 1
-  EnterpriseCustomer:
-    required:
-      - name
-      - site
-      - branding_configuration
-      - enterprise_customer_entitlements
-    type: object
-    properties:
-      uuid:
-        title: Uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        description: Enterprise Customer name.
-        type: string
-        maxLength: 255
-        minLength: 1
-      slug:
-        title: Slug
-        description: 'A short string uniquely identifying this enterprise. Cannot
-          contain spaces and should be a usable as a CSS class. Examples: "ubc", "mit-staging"'
-        type: string
-        format: slug
-        pattern: ^[-a-zA-Z0-9_]+$
-        maxLength: 30
-        minLength: 1
-      active:
-        title: Active
-        type: boolean
-      site:
-        $ref: '#/definitions/Site'
-      enable_data_sharing_consent:
-        title: Enable data sharing consent
-        description: Specifies whether data sharing consent is enabled or disabled
-          for learners signing in through this enterprise customer. If disabled, consent
-          will not be requested, and eligible data will not be shared.
-        type: boolean
-      enforce_data_sharing_consent:
-        title: Enforce data sharing consent
-        description: Specifies whether data sharing consent is optional, is required
-          at login, or is required at enrollment.
-        type: string
-        enum:
-          - at_enrollment
-          - externally_managed
-      branding_configuration:
-        $ref: '#/definitions/EnterpriseCustomerBrandingConfiguration'
-      enterprise_customer_entitlements:
-        type: array
-        items:
-          $ref: '#/definitions/EnterpriseCustomerEntitlement'
-      identity_provider:
-        title: Identity provider
-        type: string
-        readOnly: true
-      enable_audit_enrollment:
-        title: Enable audit enrollment
-        description: Specifies whether the audit track enrollment option will be displayed
-          in the course enrollment view.
-        type: boolean
-      replace_sensitive_sso_username:
-        title: Replace sensitive sso username
-        description: Specifies whether to replace the display of potentially sensitive
-          SSO usernames with a more generic name, e.g. EnterpriseLearner.
-        type: boolean
-      enable_portal_code_management_screen:
-        title: Enable portal code management screen
-        description: Specifies whether to allow access to the code management screen
-          in the admin portal.
-        type: boolean
-      sync_learner_profile_data:
-        title: Sync learner profile data
-        type: string
-        readOnly: true
-      enable_audit_data_reporting:
-        title: Enable audit data reporting
-        description: Specifies whether to pass-back audit track enrollment data through
-          an integrated channel.
-        type: boolean
-  EnterpriseCustomerCatalog:
-    required:
-      - enterprise_customer
-    type: object
-    properties:
-      uuid:
-        title: Uuid
-        type: string
-        format: uuid
-        readOnly: true
-      title:
-        title: Title
-        type: string
-        maxLength: 255
-        minLength: 1
-      enterprise_customer:
-        title: Enterprise customer
-        type: string
-        format: uuid
-  EnterpriseCustomerCatalogDetail:
-    required:
-      - enterprise_customer
-    type: object
-    properties:
-      uuid:
-        title: Uuid
-        type: string
-        format: uuid
-        readOnly: true
-      title:
-        title: Title
-        type: string
-        maxLength: 255
-        minLength: 1
-      enterprise_customer:
-        title: Enterprise customer
-        type: string
-        format: uuid
-  EnterpriseCustomerReportingConfiguration:
-    required:
-      - enterprise_customer
-      - email
-      - hour_of_day
-      - enterprise_customer_catalogs
-    type: object
-    properties:
-      enterprise_customer:
-        $ref: '#/definitions/EnterpriseCustomer'
-      active:
-        title: Active
-        type: boolean
-      delivery_method:
-        title: Delivery Method
-        description: The method in which the data should be sent.
-        type: string
-        enum:
-          - email
-          - sftp
-      email:
-        type: array
-        items:
-          type: string
-          format: email
-          minLength: 1
-      frequency:
-        title: Frequency
-        description: The frequency interval (daily, weekly, or monthly) that the report
-          should be sent.
-        type: string
-        enum:
-          - daily
-          - monthly
-          - weekly
-      day_of_month:
-        title: Day of Month
-        description: The day of the month to send the report. This field is required
-          and only valid when the frequency is monthly.
-        type: integer
-        maximum: 31
-        minimum: 1
-        x-nullable: true
-      day_of_week:
-        title: Day of Week
-        description: The day of the week to send the report. This field is required
-          and only valid when the frequency is weekly.
-        type: integer
-        enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        x-nullable: true
-      hour_of_day:
-        title: Hour of Day
-        description: The hour of the day to send the report, in Eastern Standard Time
-          (EST). This is required for all frequency settings.
-        type: integer
-        maximum: 23
-        minimum: 0
-      encrypted_password:
-        title: Encrypted password
-        type: string
-        readOnly: true
-      sftp_hostname:
-        title: SFTP Host name
-        description: If the delivery method is sftp, the host to deliver the report
-          to.
-        type: string
-        maxLength: 256
-        x-nullable: true
-      sftp_port:
-        title: SFTP Port
-        description: If the delivery method is sftp, the port on the host to connect
-          to.
-        type: integer
-        maximum: 4294967295
-        minimum: 0
-        x-nullable: true
-      sftp_username:
-        title: SFTP username
-        description: If the delivery method is sftp, the username to use to securely
-          access the host.
-        type: string
-        maxLength: 256
-        x-nullable: true
-      encrypted_sftp_password:
-        title: Encrypted sftp password
-        type: string
-        readOnly: true
-      sftp_file_path:
-        title: SFTP file path
-        description: If the delivery method is sftp, the path on the host to deliver
-          the report to.
-        type: string
-        maxLength: 256
-        x-nullable: true
-      data_type:
-        title: Data Type
-        description: The type of data this report should contain.
-        type: string
-        enum:
-          - progress
-          - progress_v2
-          - catalog
-      report_type:
-        title: Report Type
-        description: The type this report should be sent as, e.g. CSV.
-        type: string
-        enum:
-          - csv
-          - json
-      pgp_encryption_key:
-        title: PGP Encryption Key
-        description: The key for encryption, if PGP encrypted file is required.
-        type: string
-        x-nullable: true
-      enterprise_customer_catalogs:
-        type: array
-        items:
-          $ref: '#/definitions/EnterpriseCustomerCatalog'
-  NotifierUser:
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      email:
-        title: Email address
-        type: string
-        format: email
-        readOnly: true
-        minLength: 1
-      name:
-        title: Name
-        type: string
-        readOnly: true
-      preferences:
-        title: Preferences
-        type: string
-        readOnly: true
-      course_info:
-        title: Course info
-        type: string
-        readOnly: true
-  user_api.User:
-    type: object
-    properties:
-      id:
-        title: ID
-        type: integer
-        readOnly: true
-      url:
-        title: Url
-        type: string
-        format: uri
-        readOnly: true
-      email:
-        title: Email address
-        type: string
-        format: email
-        readOnly: true
-        minLength: 1
-      name:
-        title: Name
-        type: string
-        readOnly: true
-      username:
-        title: Username
-        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-          only.
-        type: string
-        readOnly: true
-        minLength: 1
-      preferences:
-        title: Preferences
-        type: string
-        readOnly: true
-  CountryTimeZone:
-    required:
-      - time_zone
-      - description
-    type: object
-    properties:
-      time_zone:
-        title: Time zone
-        type: string
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        minLength: 1
-  UserPreference:
-    required:
-      - user
-      - key
-      - value
-    type: object
-    properties:
-      user:
-        $ref: '#/definitions/user_api.User'
-      key:
-        title: Key
-        type: string
-        pattern: '[-_a-zA-Z0-9]+'
-        maxLength: 255
-        minLength: 1
-      value:
-        title: Value
-        type: string
-        minLength: 1
-      url:
-        title: Url
-        type: string
-        format: uri
-        readOnly: true

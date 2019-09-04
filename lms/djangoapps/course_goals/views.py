@@ -35,6 +35,12 @@ class CourseGoalSerializer(serializers.ModelSerializer):
         fields = ('user', 'course_key', 'goal_key')
 
 
+from django.utils.decorators import method_decorator
+from openedx.core.openapi import swagger_auto_schema, openapi
+
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_description="description from swagger_auto_schema via method_decorator"
+))
 class CourseGoalViewSet(viewsets.ModelViewSet):
     """
     API calls to create and update a course goal.
