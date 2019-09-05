@@ -71,7 +71,11 @@ QUERY_COUNT_TABLE_BLACKLIST = WAFFLE_TABLES
 
 class MockRequestSetupMixin(object):
     def _create_response_mock(self, data):
-        return Mock(text=json.dumps(data), json=Mock(return_value=data))
+        return Mock(
+            text=json.dumps(data),
+            json=Mock(return_value=data),
+            status_code=200
+        )
 
     def _set_mock_request_data(self, mock_request, data):
         mock_request.return_value = self._create_response_mock(data)
@@ -264,7 +268,6 @@ class ViewsTestCaseMixin(object):
         Ensure that mock_request returns the data necessary to make views
         function correctly
         """
-        mock_request.return_value.status_code = 200
         data = {
             "user_id": str(self.student.id),
             "closed": False,
@@ -1723,13 +1726,13 @@ class TeamsPermissionsTestCase(ForumsEnableMixin, UrlResetMixin, SharedModuleSto
 
     @ddt.data(*ddt_permissions_args)
     @ddt.unpack
-    def test_commentable_actions(self, user, commentable_id, status_code, __):
+    def test_commentable_actions(self, user, commentable_id, status_code, mock_request):
         """
         Verify that following of commentables is limited to members of the team or users with
         'edit_content' permission.
         """
         commentable_id = getattr(self, commentable_id)
-        # mock_request is not used because Commentables don't exist in comment service.
+        self._setup_mock(user, mock_request, None)
         self.client.login(username=getattr(self, user).username, password=self.password)
         for action in ["follow_commentable", "unfollow_commentable"]:
             response = self.client.post(
