@@ -117,7 +117,7 @@ edx-proctoring==2.0.7
 edx-rbac==1.0.2           # via edx-enterprise
 edx-rest-api-client==1.9.2
 edx-search==1.2.2
-git+https://github.com/mitodl/edx-sga.git@3828ba9e413080a81b907a3381e5ffa05e063f81#egg=edx-sga==0.8.3
+git+https://github.com/nedbat/edx-sga.git@675552a5ff92ad4fd537ac6ae7f7d84470490462#egg=edx-sga==0.8.4
 edx-submissions==3.0.1
 edx-user-state-client==1.1.1
 edx-when==0.3
