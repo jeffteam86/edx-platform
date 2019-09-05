@@ -2,8 +2,7 @@
 Python APIs exposed by the proram_enrollments app to other in-process apps.
 """
 
-from .models import ProgramEnrollment, ProgramCourseEnrollment
-
+from .models import ProgramCourseEnrollment, ProgramEnrollment
 
 _STUDENT_ARG_ERROR_MESSAGE = (
     u"user and external_user_key are both None; at least one must be provided."
@@ -35,12 +34,12 @@ def get_program_enrollment(
     )
 
 
-def get_program_enrollments(
+def fetch_program_enrollments(
         program_uuid,
         curriculum_uuids=None,
         users=None,
         external_user_keys=None,
-        statuses=None,
+        program_enrollment_statuses=None,
         realized_only=False,
         waiting_only=False,
 ):
@@ -55,7 +54,7 @@ def get_program_enrollments(
         "curriculum_uuid__in": curriculum_uuids,
         "user__in": users,
         "external_user_key__in": external_user_keys,
-        "status__in": statuses,
+        "status__in": program_enrollment_statuses,
     }
     if realized_only:
         filters["program_uuid__user__isnull"] = False
@@ -66,12 +65,12 @@ def get_program_enrollments(
     )
 
 
-def get_program_enrollments_by_student(
+def fetch_program_enrollments_by_student(
         user=None,
         external_user_key=None,
         program_uuids=None,
         curriculum_uuids=None,
-        statuses=None,
+        program_enrollment_statuses=None,
 ):
     """
     TODO
@@ -83,7 +82,7 @@ def get_program_enrollments_by_student(
         "external_user_key": external_user_key,
         "program_uuid__in": program_uuids,
         "curriculum_uuid__in": curriculum_uuids,
-        "status__in": statuses,
+        "status__in": program_enrollment_statuses,
     }
     return ProgramEnrollment.objects.filter(
         program_uuid=program_uuids, **_remove_none_values(filters)
@@ -114,7 +113,7 @@ def get_program_course_enrollment(
     )
 
 
-def get_program_course_enrollments(
+def fetch_program_course_enrollments(
         program_uuid,
         course_key,
         curriculum_uuids=None,
@@ -158,7 +157,7 @@ def get_program_course_enrollments(
     )
 
 
-def get_program_course_enrollments_by_student(
+def fetch_program_course_enrollments_by_student(
         user=None,
         external_user_key=None,
         program_uuids=None,
