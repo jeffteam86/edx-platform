@@ -57,9 +57,9 @@ def fetch_program_enrollments(
         "status__in": program_enrollment_statuses,
     }
     if realized_only:
-        filters["program_uuid__user__isnull"] = False
+        filters["user__isnull"] = False
     if waiting_only:
-        filters["program_uuid__user__isnull"] = True
+        filters["user__isnull"] = True
     return ProgramEnrollment.objects.filter(
         program_uuid=program_uuid, **_remove_none_values(filters)
     )
@@ -84,9 +84,7 @@ def fetch_program_enrollments_by_student(
         "curriculum_uuid__in": curriculum_uuids,
         "status__in": program_enrollment_statuses,
     }
-    return ProgramEnrollment.objects.filter(
-        program_uuid=program_uuids, **_remove_none_values(filters)
-    )
+    return ProgramEnrollment.objects.filter(**_remove_none_values(filters))
 
 
 def get_program_course_enrollment(
@@ -147,9 +145,9 @@ def fetch_program_course_enrollments(
     if inactive_only:
         filters["status"] = "inactive"
     if realized_only:
-        filters["program_uuid__user__isnull"] = False
+        filters["program_enrollment__user__isnull"] = False
     if waiting_only:
-        filters["program_uuid__user__isnull"] = True
+        filters["program_enrollment__user__isnull"] = True
     return ProgramCourseEnrollment.objects.filter(
         program_enrollment__program_uuid=program_uuid,
         course_key=course_key,
@@ -179,7 +177,7 @@ def fetch_program_course_enrollments_by_student(
     filters = {
         "program_enrollment__user": user,
         "program_enrollment__external_user_key": external_user_key,
-        "program_enrollment__program_uuid__in": curriculum_uuids,
+        "program_enrollment__program_uuid__in": program_uuids,
         "program_enrollment__curriculum_uuid__in": curriculum_uuids,
         "course_key__in": course_keys,
         "program_enrollment__status__in": program_enrollment_statuses,
@@ -188,10 +186,7 @@ def fetch_program_course_enrollments_by_student(
         filters["status"] = "active"
     if inactive_only:
         filters["status"] = "inactive"
-    return ProgramCourseEnrollment.objects.filter(
-        program_enrollment__program_uuid=program_uuids,
-        **_remove_none_values(filters)
-    )
+    return ProgramCourseEnrollment.objects.filter(**_remove_none_values(filters))
 
 
 def _remove_none_values(dictionary):
