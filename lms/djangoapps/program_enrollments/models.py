@@ -192,7 +192,7 @@ class ProgramCourseEnrollment(TimeStampedModel):  # pylint: disable=model-missin
             CourseOverview.get_from_id(self.course_key)
         except CourseOverview.DoesNotExist:
             logger.warning(
-                u"User %s failed to enroll in non-existent course %s", user.id,
+                "User %s failed to enroll in non-existent course %s", user.id,
                 text_type(self.course_key),
             )
             raise NonExistentCourseError

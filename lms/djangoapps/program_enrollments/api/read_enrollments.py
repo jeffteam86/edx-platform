@@ -1,14 +1,18 @@
 """
-Python APIs exposed by the proram_enrollments app to other in-process apps.
-"""
+Python API functions related to reading program enrollments.
 
-from .models import ProgramCourseEnrollment, ProgramEnrollment
+Outside of this subpackage, import these functions
+from `lms.djangoapps.program_enrollments.api`.
+"""
+from __future__ import absolute_import, unicode_literals
+
+from ..models import ProgramCourseEnrollment, ProgramEnrollment
 
 _STUDENT_ARG_ERROR_MESSAGE = (
-    u"user and external_user_key are both None; at least one must be provided."
+    "user and external_user_key are both None; at least one must be provided."
 )
 _REALIZED_FILTER_ERROR_TEMPLATE = (
-    u"{} and {} are mutually exclusive; at most one of them may be passed in as True."
+    "{} and {} are mutually exclusive; at most one of them may be passed in as True."
 )
 
 
