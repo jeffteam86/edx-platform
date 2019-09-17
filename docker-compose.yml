@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  edx:
+    build:
+      context: .
+    restart: always
+    ports:
+      - 80:80
+      - 18001:5000
+      - 18002:5010
+      - 18003:18010
+      - 18004:18020
