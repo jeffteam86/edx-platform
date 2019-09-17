@@ -1,0 +1,8 @@
+deployments:
+  default:
+        filename:
+          ./docker-compose.yml
+        vm_size:
+          2GB
+        port_forwarding:
+          80:80
